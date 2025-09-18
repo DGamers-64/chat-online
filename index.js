@@ -1,4 +1,5 @@
 import express, { json } from 'express'
+import colors from 'colors'
 
 const PORT = process.env.PORT
 const app = express()
@@ -7,14 +8,25 @@ const chat = []
 
 app.disable('x-powered-by')
 app.use(json())
-app.use(express.static('public'))
 
 // app.use(MiddlewaresAPI.accessLog) // MIDDLEWARE
 
 // app.use('/ykw2', ykw2Router) // ROUTER
 
+
+app.get("/", (req, res) => {
+    if (!req.query.logged) {
+        console.log(`${"CONEXIÓN NUEVA".green}: ${limpiarIP(req.socket.remoteAddress)} se ha conectado`)
+    }
+    res.sendFile("index.html", { root: "public" })
+})
+
+app.use(express.static('public'))
+
 app.post("/nombre", (req, res) => {
     nombres[limpiarIP(req.socket.remoteAddress)] = req.body.nombre
+    
+    console.log(`${"NOMBRE CAMBIADO".red}: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}`)
 
     res.send()
 })
@@ -27,11 +39,20 @@ app.post("/chat", (req, res) => {
         nombreUsuario = nombres[limpiarIP(req.socket.remoteAddress)]
     }
 
-    chat.push({
+    const mensaje = {
         timestamp: Date.now(),
         usuario: `${nombreUsuario} (${limpiarIP(req.socket.remoteAddress)})`,
         mensaje: req.body.mensaje
-    })
+    }
+
+    chat.push(mensaje)
+
+    if (mensaje.mensaje == "/cls") {
+        chat = []
+        nombres = []
+    }
+
+    console.log(`${"NUEVO MENSAJE".blue}: ${mensaje.timestamp} ${mensaje.usuario} : ${mensaje.mensaje}`)
 
     res.send()
 })

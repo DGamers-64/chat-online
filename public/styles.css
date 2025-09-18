@@ -12,7 +12,7 @@ main {
     height: 100vh;
 }
 
-div {
+#chat {
     overflow-y: scroll;
     border: 1px solid black;
     height: 90%;

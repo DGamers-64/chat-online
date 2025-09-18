@@ -16,39 +16,43 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     botonCambiarNombre.addEventListener("click", () => {
-        fetch(`${window.location.origin}/nombre`, {
+        cambiarNombre(nuevoNombre)
+    })
+
+    nuevoNombre.addEventListener("keydown", (e) => {
+        if (e.key == "Enter") cambiarNombre(nuevoNombre)
+    })
+
+    botonChatear.addEventListener("click", () => {
+        chatear(mensajeChat)
+    })
+
+    mensajeChat.addEventListener("keydown", (e) => {
+        if (e.key == "Enter") chatear(mensajeChat)
+    })
+
+    setInterval(recibirChat, 1000)
+})
+
+function cambiarNombre(nuevoNombre) {
+    fetch(`${window.location.origin}/nombre`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ nombre: nuevoNombre.value })
         })
 
-        nuevoNombre.value = ""
-    })
+    nuevoNombre.value = ""
+}
 
-    botonChatear.addEventListener("click", () => {
-        fetch(`${window.location.origin}/chat`, {
+function chatear(mensajeChat) {
+    fetch(`${window.location.origin}/chat`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ mensaje: mensajeChat.value })
         })
 
-        mensajeChat.value = ""
-    })
-
-    document.addEventListener("keydown", (e) => {
-        if (e.key == "Enter") {
-            fetch(`${window.location.origin}/chat`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ mensaje: mensajeChat.value })
-            })
-
-            mensajeChat.value = ""
-        }
-    })
-
-    setInterval(recibirChat, 1000)
-})
+    mensajeChat.value = ""
+}
 
 async function recibirChat() {
     const cuadroChat = document.getElementById("chat")
