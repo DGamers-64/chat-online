@@ -29,7 +29,7 @@ app.post("/chat", (req, res) => {
 
     chat.push({
         timestamp: Date.now(),
-        usuario: nombreUsuario,
+        usuario: `${nombreUsuario} (${limpiarIP(req.socket.remoteAddress)})`,
         mensaje: req.body.mensaje
     })
 

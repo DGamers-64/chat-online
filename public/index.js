@@ -3,6 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const botonChatear = document.getElementById("chatear")
     const mensajeChat = document.getElementById("mensaje")
     const nuevoNombre = document.getElementById("nombre")
+    const insertarImagen = document.getElementById("insertar-imagen")
+
+    insertarImagen.addEventListener("click", () => {
+        mensajeChat.value = "<img src=''>"
+    })
 
     botonCambiarNombre.addEventListener("click", () => {
         fetch(`${window.location.origin}/nombre`, {
