@@ -3,8 +3,8 @@ import colors from 'colors'
 
 const PORT = process.env.PORT
 const app = express()
-const nombres = {}
-const chat = []
+let nombres = {}
+let chat = []
 
 app.disable('x-powered-by')
 app.use(json())
