@@ -6,7 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const insertarImagen = document.getElementById("insertar-imagen")
 
     insertarImagen.addEventListener("click", () => {
-        mensajeChat.value = "<img src=''>"
+        fetch(`${window.location.origin}/chat`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mensaje: `<img src="${mensajeChat.value}">` })
+        })
+
+        mensajeChat.value = ""
     })
 
     botonCambiarNombre.addEventListener("click", () => {
