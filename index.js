@@ -5,6 +5,7 @@ const PORT = process.env.PORT
 const app = express()
 let nombres = {}
 let chat = []
+let id = 0
 
 app.disable('x-powered-by')
 app.use(json())
@@ -40,19 +41,23 @@ app.post("/chat", (req, res) => {
     }
 
     const mensaje = {
+        id: id,
         timestamp: Date.now(),
         usuario: `${nombreUsuario} (${limpiarIP(req.socket.remoteAddress)})`,
         mensaje: req.body.mensaje
     }
+
+    id++
 
     chat.push(mensaje)
 
     if (mensaje.mensaje == "/cls") {
         chat = []
         nombres = []
+        id = 0
     }
 
-    console.log(`${"NUEVO MENSAJE".blue}: ${mensaje.timestamp} ${mensaje.usuario} : ${mensaje.mensaje}`)
+    console.log(`${"NUEVO MENSAJE".blue}: ${mensaje.id} ${mensaje.timestamp} ${mensaje.usuario} : ${mensaje.mensaje}`)
 
     res.send()
 })
@@ -75,6 +80,8 @@ app.listen(PORT, () => {
 function limpiarIP(ip) {
     if (ip.startsWith("::ffff:")) {
         ip = ip.replace("::ffff:", "");
+    } else if (ip.startsWith("::1")) {
+        ip = "127.0.0.1"
     }
     return ip
 }

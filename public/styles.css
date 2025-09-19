@@ -18,3 +18,24 @@ main {
     height: 90%;
     padding: 1rem;
 }
+
+section {
+    display: flex;
+    gap: 1rem;
+}
+
+#mensaje {
+    flex-grow: 7;
+}
+
+#chatear, #insertar-imagen {
+    flex-grow: 1;
+}
+
+.respuesta-chat {
+    color: blue;
+}
+
+.highlight {
+    background-color: lightgray;
+}

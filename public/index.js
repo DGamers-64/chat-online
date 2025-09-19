@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ mensaje: `<img src="${mensajeChat.value}">` })
         })
-
         mensajeChat.value = ""
     })
 
@@ -31,42 +30,93 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key == "Enter") chatear(mensajeChat)
     })
 
+    document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("enlace-mensaje")) {
+            e.preventDefault()
+            const id = e.target.getAttribute("href").substring(1)
+            const mensaje = document.getElementById(id)
+            const chat = document.getElementById("chat")
+
+            if (mensaje) {
+                mensaje.scrollIntoView({ behavior: "smooth", block: "start" })
+
+                mensaje.style.backgroundColor = "lightgray"
+                setTimeout(() => {
+                    mensaje.style.backgroundColor = "white"
+                }, 2000)
+            }
+        }
+    })
+
     setInterval(recibirChat, 1000)
 })
 
 function cambiarNombre(nuevoNombre) {
     fetch(`${window.location.origin}/nombre`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nombre: nuevoNombre.value })
-        })
-
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre: nuevoNombre.value })
+    })
     nuevoNombre.value = ""
 }
 
 function chatear(mensajeChat) {
     fetch(`${window.location.origin}/chat`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ mensaje: mensajeChat.value })
-        })
-
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mensaje: mensajeChat.value })
+    })
     mensajeChat.value = ""
 }
 
 async function recibirChat() {
     const cuadroChat = document.getElementById("chat")
+    const estabaAbajo = cuadroChat.scrollTop + cuadroChat.clientHeight >= cuadroChat.scrollHeight - 5
 
     await fetch(`${window.location.origin}/chat`)
         .then(res => res.json())
         .then(data => {
-            chat = ""
+            let chat = ""
             data.forEach(e => {
                 const tiempo = new Date(e.timestamp)
-                chat += `<p><span class='horas-chat'>${tiempo.getHours().toString().padStart(2, "0")}:${tiempo.getMinutes().toString().padStart(2, "0")}:${tiempo.getSeconds().toString().padStart(2, "0")}</span> | <span class='nombre-chat'>${e.usuario}</span>: <span class='mensaje-chat'>${e.mensaje}</span></p>`
-            });
+                
+                let respuesta = false
+                let mensajeRespondido
+
+                if (e.mensaje.startsWith("@")) {
+                    let id = e.mensaje.split("@")[1]
+                    mensajeRespondido = data.find((m) => m.id == id)
+                    respuesta = true
+                }
+
+                if (!respuesta) {
+                    chat += `<p id="msg-${e.id}">
+                                <span class='id-chat'>#${e.id.toString().padStart(4, "0")}</span> 
+                                <span class='horas-chat'>
+                                    ${tiempo.getHours().toString().padStart(2, "0")}:${tiempo.getMinutes().toString().padStart(2, "0")}:${tiempo.getSeconds().toString().padStart(2, "0")}
+                                </span> 
+                                | <span class='nombre-chat'>${e.usuario}</span>: 
+                                <span class='mensaje-chat'>${e.mensaje}</span>
+                             </p>`
+                } else {
+                    chat += `<a href="#msg-${mensajeRespondido.id}" class="respuesta-chat">
+                                &gt; ${mensajeRespondido.usuario}: ${mensajeRespondido.mensaje}
+                             </a>
+                             <p class="respuesta-chat" id="msg-${e.id}">
+                                <span class='id-chat'>#${e.id.toString().padStart(4, "0")}</span> 
+                                <span class='horas-chat'>
+                                    ${tiempo.getHours().toString().padStart(2, "0")}:${tiempo.getMinutes().toString().padStart(2, "0")}:${tiempo.getSeconds().toString().padStart(2, "0")}
+                                </span> 
+                                | <span class='nombre-chat'>${e.usuario}</span>: 
+                                <span class='mensaje-chat'>${e.mensaje.split("@")[2]}</span>
+                             </p>`
+                }
+            })
             cuadroChat.innerHTML = chat
         })
-    
-    cuadroChat.scrollTop = cuadroChat.scrollHeight
+
+    if (estabaAbajo) {
+        cuadroChat.scrollTop = cuadroChat.scrollHeight
+    }
 }
+
