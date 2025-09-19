@@ -31,19 +31,20 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     document.addEventListener("click", (e) => {
-        if (e.target.classList.contains("enlace-mensaje")) {
+        if (e.target.classList.contains("respuesta-chat")) {
             e.preventDefault()
-            const id = e.target.getAttribute("href").substring(1)
+            const id = e.target.getAttribute("href").substring(1) // ej: msg-7
             const mensaje = document.getElementById(id)
             const chat = document.getElementById("chat")
 
             if (mensaje) {
-                mensaje.scrollIntoView({ behavior: "smooth", block: "start" })
+                chat.scrollTop = mensaje.offsetTop - chat.offsetTop
 
-                mensaje.style.backgroundColor = "lightgray"
-                setTimeout(() => {
-                    mensaje.style.backgroundColor = "white"
-                }, 2000)
+                // quitar highlight de todos
+                document.querySelectorAll(".highlight").forEach(m => m.classList.remove("highlight"))
+
+                // añadir highlight al actual
+                mensaje.classList.add("highlight")
             }
         }
     })
