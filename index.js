@@ -1,5 +1,7 @@
 import express, { json } from 'express'
 import colors from 'colors'
+import { limpiarIP } from "./functions/limpiarIP.js";
+import { mandarMensaje } from "./functions/mandarMensaje.js";
 
 const PORT = process.env.PORT
 const app = express()
@@ -9,11 +11,6 @@ let id = 0
 
 app.disable('x-powered-by')
 app.use(json())
-
-// app.use(MiddlewaresAPI.accessLog) // MIDDLEWARE
-
-// app.use('/ykw2', ykw2Router) // ROUTER
-
 
 app.get("/", (req, res) => {
     if (!req.query.logged) {
@@ -32,35 +29,7 @@ app.post("/nombre", (req, res) => {
     res.send()
 })
 
-app.post("/chat", (req, res) => {
-    let nombreUsuario
-    if (!nombres[limpiarIP(req.socket.remoteAddress)]) {
-        nombreUsuario = limpiarIP(req.socket.remoteAddress)
-    } else {
-        nombreUsuario = nombres[limpiarIP(req.socket.remoteAddress)]
-    }
-
-    const mensaje = {
-        id: id,
-        timestamp: Date.now(),
-        usuario: `${nombreUsuario} (${limpiarIP(req.socket.remoteAddress)})`,
-        mensaje: req.body.mensaje
-    }
-
-    id++
-
-    chat.push(mensaje)
-
-    if (mensaje.mensaje == "/cls") {
-        chat = []
-        nombres = []
-        id = 0
-    }
-
-    console.log(`${"NUEVO MENSAJE".blue}: ${mensaje.id} ${mensaje.timestamp} ${mensaje.usuario} : ${mensaje.mensaje}`)
-
-    res.send()
-})
+app.post("/chat", (req, res) => { mandarMensaje(req, res, nombres, chat, id) })
 
 app.get("/chat", (req, res) => {
     res.send(chat)
@@ -72,16 +41,9 @@ app.use((req, res) => {
 
 app.listen(PORT, () => {
     console.log('--------------------------------------------')
+    console.log('CHAT ONLINE EN NODEJS')
+    console.log('--------------------------------------------')
     console.log(`Servidor encendido en el puerto ${PORT}`)
     console.log(`Cliente alojado en http://localhost:${PORT}`)
     console.log('--------------------------------------------')
 })
-
-function limpiarIP(ip) {
-    if (ip.startsWith("::ffff:")) {
-        ip = ip.replace("::ffff:", "");
-    } else if (ip.startsWith("::1")) {
-        ip = "127.0.0.1"
-    }
-    return ip
-}

@@ -4,24 +4,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const mensajeChat = document.getElementById("mensaje")
     const nuevoNombre = document.getElementById("nombre")
     const insertarImagen = document.getElementById("insertar-imagen")
-
-    insertarImagen.addEventListener("click", () => {
-        fetch(`${window.location.origin}/chat`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ mensaje: `<img src="${mensajeChat.value}">` })
-        })
-        mensajeChat.value = ""
-    })
-
+    
     botonCambiarNombre.addEventListener("click", () => {
         cambiarNombre(nuevoNombre)
     })
-
+    
     nuevoNombre.addEventListener("keydown", (e) => {
         if (e.key == "Enter") cambiarNombre(nuevoNombre)
-    })
+        })
 
+    insertarImagen.addEventListener("click", () => {
+        chatear(`<img src="${mensajeChat}">`)
+    })
+    
     botonChatear.addEventListener("click", () => {
         chatear(mensajeChat)
     })
@@ -33,17 +28,15 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
         if (e.target.classList.contains("respuesta-chat")) {
             e.preventDefault()
-            const id = e.target.getAttribute("href").substring(1) // ej: msg-7
+            const id = e.target.getAttribute("href").substring(1)
             const mensaje = document.getElementById(id)
             const chat = document.getElementById("chat")
 
             if (mensaje) {
                 chat.scrollTop = mensaje.offsetTop - chat.offsetTop
 
-                // quitar highlight de todos
                 document.querySelectorAll(".highlight").forEach(m => m.classList.remove("highlight"))
 
-                // añadir highlight al actual
                 mensaje.classList.add("highlight")
             }
         }
