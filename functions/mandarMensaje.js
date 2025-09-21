@@ -1,5 +1,6 @@
 import { limpiarIP } from "./limpiarIP.js";
 import { comprobarMensaje } from '../commands/commands.js'
+import { colors } from "colors";
 
 export function mandarMensaje(req, res, nombres, chat, id) {
     let nombreUsuario
@@ -47,7 +48,7 @@ export function mandarMensaje(req, res, nombres, chat, id) {
     nombres = propiedadesMensaje.nombres || nombres
     id = propiedadesMensaje.id || id
 
-    console.log(`${"NUEVO MENSAJE".blue}: ${mensaje.id} ${mensaje.timestamp} ${mensaje.usuario} : ${mensaje.mensaje}`)
+    console.log(`${colors.blue("NUEVO MENSAJE")}: ${mensaje.id} ${mensaje.timestamp} ${mensaje.usuario} : ${mensaje.mensaje}`)
 
     res.send()
 }

@@ -1,6 +1,7 @@
 import { cls } from "./cls.js";
 import { dados } from "./dados.js";
 import { ayuda } from "./ayuda.js";
+import { cerrar } from "./cerrar.js";
 
 export function comprobarMensaje(mensaje, chat, nombres, id) {
     let propiedadesMensaje = {
@@ -28,6 +29,10 @@ export function comprobarMensaje(mensaje, chat, nombres, id) {
 
         case "ayuda":
             propiedadesMensaje = ayuda()
+            break;
+
+        case "cerrar":
+            propiedadesMensaje = cerrar()
             break;
 
         default:

@@ -14,7 +14,7 @@ app.use(json())
 
 app.get("/", (req, res) => {
     if (!req.query.logged) {
-        console.log(`${"CONEXIÓN NUEVA".green}: ${limpiarIP(req.socket.remoteAddress)} se ha conectado`)
+        console.log(`${colors.green("CONEXIÓN NUEVA")}: ${limpiarIP(req.socket.remoteAddress)} se ha conectado`)
     }
     res.sendFile("index.html", { root: "public" })
 })
@@ -24,7 +24,7 @@ app.use(express.static('public'))
 app.post("/nombre", (req, res) => {
     nombres[limpiarIP(req.socket.remoteAddress)] = req.body.nombre
     
-    console.log(`${"NOMBRE CAMBIADO".red}: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}`)
+    console.log(`${colors.red("NOMBRE CAMBIADO")}: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}`)
 
     res.send()
 })
