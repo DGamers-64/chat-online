@@ -1,13 +1,12 @@
 import { cls } from "./cls.js";
 import { dados } from "./dados.js";
 import { ayuda } from "./ayuda.js";
-import { cerrar } from "./cerrar.js";
 
-export function comprobarMensaje(mensaje, chat, nombres, id) {
+export function comprobarMensaje(mensaje) {
     let propiedadesMensaje = {
         mostrar: true,
         mensajeSistema: {            
-            id: id,
+            id: global.id,
             timestamp: Date.now(),
             usuario: `SISTEMA`,
         }
@@ -29,10 +28,6 @@ export function comprobarMensaje(mensaje, chat, nombres, id) {
 
         case "ayuda":
             propiedadesMensaje = ayuda()
-            break;
-
-        case "cerrar":
-            propiedadesMensaje = cerrar()
             break;
 
         default:

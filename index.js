@@ -1,49 +1,46 @@
 import express, { json } from 'express'
-import colors from 'colors'
-import { limpiarIP } from "./functions/limpiarIP.js";
 import { mandarMensaje } from "./functions/mandarMensaje.js";
+import { limpiarIP } from "./functions/limpiarIP.js";
+import { logger } from "./functions/logger.js";
+import { styleText } from "node:util";
 
 const PORT = process.env.PORT
 const app = express()
-let nombres = {}
-let chat = []
-let id = 0
+global.nombres = {}
+global.chat = []
+global.id = 0
 
 app.disable('x-powered-by')
 app.use(json())
 
-app.get("/", (req, res) => {
-    if (!req.query.logged) {
-        console.log(`${colors.green("CONEXIÓN NUEVA")}: ${limpiarIP(req.socket.remoteAddress)} se ha conectado`)
-    }
-    res.sendFile("index.html", { root: "public" })
-})
 
 app.use(express.static('public'))
 
 app.post("/nombre", (req, res) => {
-    nombres[limpiarIP(req.socket.remoteAddress)] = req.body.nombre
+    global.nombres[limpiarIP(req.socket.remoteAddress)] = req.body.nombre
     
-    console.log(`${colors.red("NOMBRE CAMBIADO")}: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}`)
+    logger(`${styleText("yellow", "NOMBRE CAMBIADO")}: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}`)
 
     res.send()
 })
 
-app.post("/chat", (req, res) => { mandarMensaje(req, res, nombres, chat, id) })
+app.post("/chat", (req, res) => { mandarMensaje(req, res) })
 
 app.get("/chat", (req, res) => {
-    res.send(chat)
+    let chatAEnviar = global.chat.filter(e => e.id >= req.query.id)
+
+    res.send(chatAEnviar)
 })
 
 app.use((req, res) => {
-    res.status(404).send({ res: `Error 404: ${req.url}` })
+    res.status(404).send('<h1>Error 404</h1>')
 })
 
 app.listen(PORT, () => {
-    console.log('--------------------------------------------')
-    console.log('CHAT ONLINE EN NODEJS')
-    console.log('--------------------------------------------')
-    console.log(`Servidor encendido en el puerto ${PORT}`)
-    console.log(`Cliente alojado en http://localhost:${PORT}`)
-    console.log('--------------------------------------------')
+    console.log(styleText("cyan", '--------------------------------------------'))
+    console.log(styleText("cyan", '           CHAT ONLINE EN NODEJS'))
+    console.log(styleText("cyan", '--------------------------------------------'))
+    console.log(styleText("cyan", `Servidor encendido en el puerto ${PORT}`))
+    console.log(styleText("cyan", `Cliente alojado en http://localhost:${PORT}`))
+    console.log(styleText("cyan", '--------------------------------------------'))
 })

@@ -1,23 +1,24 @@
-import { limpiarIP } from "./limpiarIP.js";
 import { comprobarMensaje } from '../commands/commands.js'
-import { colors } from "colors";
+import { styleText } from "node:util";
+import { limpiarIP } from "./limpiarIP.js";
+import { logger } from "./logger.js";
 
-export function mandarMensaje(req, res, nombres, chat, id) {
+export function mandarMensaje(req, res) {
     let nombreUsuario
-    if (!nombres[limpiarIP(req.socket.remoteAddress) || "0.0.0.0"]) {
+    if (!global.nombres[limpiarIP(req.socket.remoteAddress) || "0.0.0.0"]) {
         nombreUsuario = limpiarIP(req.socket.remoteAddress)
     } else {
-        nombreUsuario = nombres[limpiarIP(req.socket.remoteAddress)]
+        nombreUsuario = global.nombres[limpiarIP(req.socket.remoteAddress)]
     }
 
     const mensaje = {
-        id: id,
+        id: global.id,
         timestamp: Date.now(),
-        usuario: `${nombreUsuario} (${limpiarIP(req.socket.remoteAddress)})`,
+        usuario: `${nombreUsuario}`,
         mensaje: req.body.mensaje
     }
 
-    id++
+    global.id++
 
     let propiedadesMensaje = {
         mostrar: true,
@@ -25,30 +26,26 @@ export function mandarMensaje(req, res, nombres, chat, id) {
     }
 
     if (mensaje.mensaje.startsWith("/")) {
-        propiedadesMensaje = comprobarMensaje(mensaje, chat, nombres, id)
+        propiedadesMensaje = comprobarMensaje(mensaje)
     }
 
     if (propiedadesMensaje.mostrar) {
-        chat.push(mensaje)
+        global.chat.push(mensaje)
     }
 
     if (propiedadesMensaje.mensajeSistema.mensaje) {
         const mensajeSistema = {
-            id: id,
+            id: global.id,
             timestamp: Date.now(),
             usuario: "SISTEMA",
             mensaje: propiedadesMensaje.mensajeSistema.mensaje
         }
 
-        chat.push(mensajeSistema)
-        id++
+        global.chat.push(mensajeSistema)
+        global.id++
     }
 
-    chat = propiedadesMensaje.chat || chat
-    nombres = propiedadesMensaje.nombres || nombres
-    id = propiedadesMensaje.id || id
-
-    console.log(`${colors.blue("NUEVO MENSAJE")}: ${mensaje.id} ${mensaje.timestamp} ${mensaje.usuario} : ${mensaje.mensaje}`)
+    logger(`${styleText("blue", "NUEVO MENSAJE")}: #${mensaje.id} ${mensaje.timestamp} ${limpiarIP(mensaje.usuario)} : ${mensaje.mensaje}`)
 
     res.send()
 }

@@ -1,3 +1,5 @@
+let ultimoId = -1
+
 document.addEventListener("DOMContentLoaded", () => {
     const botonCambiarNombre = document.getElementById("cambiar-nombre-boton")
     const botonChatear = document.getElementById("chatear")
@@ -25,23 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key == "Enter") chatear(mensajeChat)
     })
 
-    document.addEventListener("click", (e) => {
-        if (e.target.classList.contains("respuesta-chat")) {
-            e.preventDefault()
-            const id = e.target.getAttribute("href").substring(1)
-            const mensaje = document.getElementById(id)
-            const chat = document.getElementById("chat")
-
-            if (mensaje) {
-                chat.scrollTop = mensaje.offsetTop - chat.offsetTop
-
-                document.querySelectorAll(".highlight").forEach(m => m.classList.remove("highlight"))
-
-                mensaje.classList.add("highlight")
-            }
-        }
-    })
-
     setInterval(recibirChat, 1000)
 })
 
@@ -67,10 +52,10 @@ async function recibirChat() {
     const cuadroChat = document.getElementById("chat")
     const estabaAbajo = cuadroChat.scrollTop + cuadroChat.clientHeight >= cuadroChat.scrollHeight - 5
 
-    await fetch(`${window.location.origin}/chat`)
+    await fetch(`${window.location.origin}/chat?id=${ultimoId+1}`)
         .then(res => res.json())
         .then(data => {
-            let chat = ""
+            let chat = cuadroChat.innerHTML
             data.forEach(e => {
                 const tiempo = new Date(e.timestamp)
                 
@@ -105,6 +90,8 @@ async function recibirChat() {
                                 <span class='mensaje-chat'>${e.mensaje.split("@")[2]}</span>
                              </p>`
                 }
+
+                ultimoId = e.id
             })
             cuadroChat.innerHTML = chat
         })

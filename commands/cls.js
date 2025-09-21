@@ -1,7 +1,7 @@
 export function cls() {
-    let nuevoChat = []
-    let nuevoNombres = []
-    let nuevoId = 0
+    global.nombres = []
+    global.chat = []
+    global.id = 0
 
-    return { mostrar: false, mensajeSistema: {}, chat: nuevoChat, nombres: nuevoNombres, id: nuevoId }
+    return { mostrar: false, mensajeSistema: {} }
 }
