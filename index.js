@@ -1,5 +1,5 @@
 import express, { json } from 'express'
-import { mandarMensaje } from "./functions/mandarMensaje.js";
+import { recibirMensaje } from "./functions/recibirMensaje.js";
 import { limpiarIP } from "./functions/limpiarIP.js";
 import { logger } from "./functions/logger.js";
 import { styleText } from "node:util";
@@ -13,34 +13,34 @@ global.id = 0
 app.disable('x-powered-by')
 app.use(json())
 
-
 app.use(express.static('public'))
 
 app.post("/nombre", (req, res) => {
     global.nombres[limpiarIP(req.socket.remoteAddress)] = req.body.nombre
     
-    logger(`${styleText("yellow", "NOMBRE CAMBIADO")}: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}`)
+    console.log(`${styleText("yellow", "NOMBRE CAMBIADO")}: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}`)
+    logger(`NOMBRE CAMBIADO: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}\n`)
 
     res.send()
 })
 
-app.post("/chat", (req, res) => { mandarMensaje(req, res) })
+app.post("/chat", recibirMensaje)
 
-app.get("/chat", (req, res) => {
-    let chatAEnviar = global.chat.filter(e => e.id >= req.query.id)
+app.get("/chat", (req, res) => { res.send(global.chat.filter(e => e.id >= req.query.id)) })
 
-    res.send(chatAEnviar)
-})
-
-app.use((req, res) => {
-    res.status(404).send('<h1>Error 404</h1>')
-})
+app.use((req, res) => { res.status(404).send('<h1>Error 404</h1>') })
 
 app.listen(PORT, () => {
-    console.log(styleText("cyan", '--------------------------------------------'))
-    console.log(styleText("cyan", '           CHAT ONLINE EN NODEJS'))
-    console.log(styleText("cyan", '--------------------------------------------'))
-    console.log(styleText("cyan", `Servidor encendido en el puerto ${PORT}`))
-    console.log(styleText("cyan", `Cliente alojado en http://localhost:${PORT}`))
-    console.log(styleText("cyan", '--------------------------------------------'))
+    const texto = [
+        "--------------------------------------------",
+        "           CHAT ONLINE EN NODEJS            ",
+        "--------------------------------------------",
+        `PUBLICO: ${process.env.PUBLICO}`,
+        "--------------------------------------------",
+        `Servidor encendido en el puerto ${PORT}     `,
+        `Cliente alojado en http://localhost:${PORT} `,
+        "--------------------------------------------",
+    ].join("\n")
+
+    console.log(styleText("cyan", texto))
 })
