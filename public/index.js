@@ -1,6 +1,7 @@
 let ultimoId = -1
 let tieneMensajesNuevos = false;
-let notificacionesActivadas = Notification.permission
+let notificacionesActivadas = Notification.permission === "granted";
+let notificacionesUsuario = notificacionesActivadas;
 
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
@@ -17,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const botonNotificaciones = document.getElementById("notificaciones")
     const insertarImagen = document.getElementById("insertar-imagen")
 
-    botonNotificaciones.innerHTML = notificacionesActivadas == "granted" ? "Notificaciones activadas" : "Notificaciones desactivadas"
+    botonNotificaciones.innerHTML = notificacionesUsuario ? "Notificaciones activadas" : "Notificaciones desactivadas";
 
     botonCambiarNombre.addEventListener("click", () => {
         cambiarNombre(nuevoNombre)
@@ -39,26 +40,25 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key == "Enter") chatear(mensajeChat)
     })
 
-    botonNotificaciones.addEventListener("click", (e) => {
-        e.preventDefault()
+    botonNotificaciones.addEventListener("click", async (e) => {
+        e.preventDefault();
 
-        if (notificacionesActivadas == "granted") {
-            botonNotificaciones.innerHTML = "Notificaciones desactivadas"
-            notificacionesActivadas = "denied"
-        } else if (notificacionesActivadas == "denied") {
-            botonNotificaciones.innerHTML = "Notificaciones activadas"
-            notificacionesActivadas = "granted"
-        }
-        
         if (!("Notification" in window)) {
-            console.log("This browser does not support notifications.");
+            alert("Este navegador no soporta notificaciones.");
             return;
         }
-        
-        Notification.requestPermission().then((permission) => {
-            botonNotificaciones.innerHTML = "Notificaciones activadas"
-        });
-    })
+
+        if (Notification.permission !== "granted") {
+            const permiso = await Notification.requestPermission();
+            if (permiso !== "granted") {
+                alert("No se pudieron activar las notificaciones.");
+                return;
+            }
+        }
+
+        notificacionesUsuario = !notificacionesUsuario;
+        botonNotificaciones.innerHTML = notificacionesUsuario ? "Notificaciones activadas" : "Notificaciones desactivadas";
+    });
 
     setInterval(recibirChat, 1000)
 })
@@ -128,10 +128,11 @@ async function recibirChat() {
                 ultimoId = e.id
 
                 if (document.visibilityState !== "visible" && !tieneMensajesNuevos) {
-                    document.title = "Chat ●"
-                    tieneMensajesNuevos = true
-                    if (notificacionesActivadas == "granted") {
-                        new Notification(e.usuario, { body: e.mensaje })
+                    document.title = "Chat ●";
+                    tieneMensajesNuevos = true;
+
+                    if (notificacionesUsuario && Notification.permission === "granted") {
+                        new Notification(e.usuario, { body: e.mensaje });
                     }
                 }
             })

@@ -13,18 +13,25 @@ main {
 }
 
 #chat {
+    flex-grow: 9;
     overflow-y: scroll;
     border: 1px solid black;
     height: 90%;
     padding: 1rem;
 }
 
+#botones-arriba {
+    flex-grow: 1;
+}
+
 section {
+    flex-grow: 1;
     display: flex;
     gap: 1rem;
 }
 
 #mensaje {
+    padding: .2rem;
     flex-grow: 7;
 }
 
