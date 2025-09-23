@@ -1,4 +1,3 @@
-import { cls } from "./cls.js";
 import { dados } from "./dados.js";
 import { ayuda } from "./ayuda.js";
 import { ban } from "./ban.js";
@@ -7,7 +6,6 @@ import administradores from "../listas/administradores.json" with { type: "json"
 
 export async function comprobarMensaje(mensaje, ip) {
     const comandos = {
-        cls: { fn: () => cls(), roles: ["user", "admin"] },
         dados: { fn: (args) => dados(args[0]), roles: ["user", "admin"] },
         ayuda: { fn: () => ayuda(), roles: ["user", "admin"] },
         ban: { fn: (args) => ban(args[0]), roles: ["admin"] },

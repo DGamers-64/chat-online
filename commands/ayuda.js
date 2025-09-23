@@ -13,7 +13,6 @@ export function ayuda() {
                 <h3>Comandos</h3>
                 <ul style='padding: 1rem;'>
                     <li>/ayuda: Muestra esta ayuda</li>
-                    <li>/cls: Limpia el chat y los nombres</li>
                     <li>/dados {numero}: Tira un dado de tantas caras como especifiques</li>
                 </ul>
             </div>`
