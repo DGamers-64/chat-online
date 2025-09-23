@@ -1,30 +1,11 @@
-import { comprobarMensaje } from '../commands/commands.js'
+import { comprobarMensaje } from '../commands/index.js'
 import { styleText } from "node:util";
 import { limpiarIP } from "./limpiarIP.js";
-import { logger } from "./logger.js";
-import blacklist from "../data/blacklist.json" with { type: "json" };
-import whitelist from "../data/whitelist.json" with { type: "json" };
 
 export async function recibirMensaje(req, res) {
     const ip = limpiarIP(req.socket.remoteAddress);
-    const esPublico = process.env.PUBLICO === "true";
-    let debeBloquear = false;
-
-    if (esPublico) {
-        debeBloquear = blacklist.includes(ip);
-    } else {
-        debeBloquear = !whitelist.includes(ip);
-    }
-
-    if (debeBloquear) {
-        res.send();
-        console.log(`${ip} ha intentado mandar un mensaje: ${req.body.mensaje}`);
-        logger(`${ip} ha intentado mandar un mensaje: ${req.body.mensaje}\n`);
-        return;
-    }
-
     let nombreUsuario;
-
+    
     if (!global.nombres[ip || "0.0.0.0"]) {
         nombreUsuario = ip;
     } else {
@@ -46,7 +27,7 @@ export async function recibirMensaje(req, res) {
     };
 
     if (mensaje.mensaje.startsWith(process.env.PREFIJO)) {
-        propiedadesMensaje = comprobarMensaje(mensaje, limpiarIP(req.socket.remoteAddress));
+        propiedadesMensaje = await comprobarMensaje(mensaje, ip);
     }
 
     if (propiedadesMensaje.mostrar) {
@@ -66,7 +47,6 @@ export async function recibirMensaje(req, res) {
     }
 
     console.log(`${styleText("blue", "NUEVO MENSAJE")}: #${mensaje.id} ${mensaje.timestamp} ${ip} : ${mensaje.mensaje}`);
-    logger(`NUEVO MENSAJE: #${mensaje.id} ${mensaje.timestamp} ${ip} : ${mensaje.mensaje}\n`);
 
     res.send();
 }

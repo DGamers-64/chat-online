@@ -1,8 +1,9 @@
 import express, { json } from 'express'
 import { recibirMensaje } from "./functions/recibirMensaje.js";
 import { limpiarIP } from "./functions/limpiarIP.js";
-import { logger } from "./functions/logger.js";
+import { logger } from "./middlewares/log.js";
 import { styleText } from "node:util";
+import { banlist } from './middlewares/banlist.js';
 
 const PORT = process.env.PORT
 const app = express()
@@ -13,13 +14,14 @@ global.id = 0
 app.disable('x-powered-by')
 app.use(json())
 
+app.use(banlist)
+app.use(logger)
 app.use(express.static('public'))
 
 app.post("/nombre", (req, res) => {
     global.nombres[limpiarIP(req.socket.remoteAddress)] = req.body.nombre
     
     console.log(`${styleText("yellow", "NOMBRE CAMBIADO")}: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}`)
-    logger(`NOMBRE CAMBIADO: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}\n`)
 
     res.send()
 })

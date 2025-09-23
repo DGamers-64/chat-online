@@ -1,19 +1,18 @@
 import fs from "fs";
-import blacklist from "../data/blacklist.json" with { type: "json" };
-import whitelist from "../data/whitelist.json" with { type: "json" };
 
 export async function unban(ip) {
-    whitelist.push(ip)
+    const whitelist = JSON.parse(fs.readFileSync("./listas/whitelist.json", "utf-8"));
+    const blacklist = JSON.parse(fs.readFileSync("./listas/blacklist.json", "utf-8"));
 
-    fs.writeFileSync("./data/whitelist.json", JSON.stringify(whitelist))
-    
-    const idx = blacklist.indexOf(ip)
+    if (!whitelist.includes(ip)) whitelist.push(ip);
 
-    if (idx > -1) {
-        blacklist.splice(idx, 1)
-    }
+    const idx = blacklist.indexOf(ip);
+    if (idx > -1) blacklist.splice(idx, 1);
 
-    fs.writeFileSync("./data/blacklist.json", JSON.stringify(blacklist))
+    fs.writeFileSync("./listas/whitelist.json", JSON.stringify(whitelist, null, 2));
+    fs.writeFileSync("./listas/blacklist.json", JSON.stringify(blacklist, null, 2));
 
-    return { mostrar: true, mensajeSistema: {} }
+    return { mostrar: false, mensajeSistema: {
+        mensaje: `${ip} ha sido desbaneado`
+    } };
 }
