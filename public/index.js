@@ -137,6 +137,9 @@ async function recibirChat() {
             })
             cuadroChat.innerHTML = chat
         })
+        .catch((e) => {
+            cuadroChat.innerHTML = "<h1>Chat cerrado</h1>"
+        })
 
     if (estabaAbajo) {
         cuadroChat.scrollTop = cuadroChat.scrollHeight

@@ -9,7 +9,9 @@ export async function comprobarMensaje(mensaje, ip) {
         dados: { fn: (args) => dados(args[0]), roles: ["user", "admin"] },
         ayuda: { fn: () => ayuda(), roles: ["user", "admin"] },
         ban: { fn: (args) => ban(args[0]), roles: ["admin"] },
-        unban: { fn: (args) => unban(args[0]), roles: ["admin"] }
+        unban: { fn: (args) => unban(args[0]), roles: ["admin"] },
+        white: { fn: (args) => ban(args[0]), roles: ["admin"] },
+        unwhite: { fn: (args) => unban(args[0]), roles: ["admin"] }
     };
 
     let propiedadesMensaje = {

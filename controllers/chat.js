@@ -1,6 +1,6 @@
 import { comprobarMensaje } from '../commands/index.js'
 import { styleText } from "node:util";
-import { limpiarIP } from "./limpiarIP.js";
+import { limpiarIP } from "../functions/limpiarIP.js";
 
 export async function recibirMensaje(req, res) {
     const ip = limpiarIP(req.socket.remoteAddress);
@@ -19,8 +19,6 @@ export async function recibirMensaje(req, res) {
         mensaje: req.body.mensaje
     };
 
-    global.id++;
-
     let propiedadesMensaje = {
         mostrar: true,
         mensajeSistema: {}
@@ -29,9 +27,10 @@ export async function recibirMensaje(req, res) {
     if (mensaje.mensaje.startsWith(process.env.PREFIJO)) {
         propiedadesMensaje = await comprobarMensaje(mensaje, ip);
     }
-
+    
     if (propiedadesMensaje.mostrar) {
         global.chat.push(mensaje);
+        global.id++;
     }
 
     if (propiedadesMensaje.mensajeSistema.mensaje) {
@@ -49,4 +48,8 @@ export async function recibirMensaje(req, res) {
     console.log(`${styleText("blue", "NUEVO MENSAJE")}: #${mensaje.id} ${mensaje.timestamp} ${ip} : ${mensaje.mensaje}`);
 
     res.send();
+}
+
+export function enviarChat(req, res) {
+    res.send(global.chat.filter(e => e.id >= req.query.id))
 }

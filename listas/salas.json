@@ -1,0 +1,9 @@
+{
+    "default": {
+        "administradores": [
+            "127.0.0.1"
+        ],
+        "visibilidad": "publico",
+        "archivo": "./salas/chat-default.json"
+    }
+}
