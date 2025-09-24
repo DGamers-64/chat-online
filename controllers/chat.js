@@ -13,7 +13,6 @@ export async function recibirMensaje(req, res) {
     const infoSalas = JSON.parse(await fs.readFile("./listas/salas.json", "utf-8"));
     const salaActual = infoSalas[chatId] || infoSalas["default"]
     const chatActual = JSON.parse(await fs.readFile(salaActual.archivo, "utf-8"));
-    let idMensaje = chatActual.length
 
     const ip = limpiarIP(req.socket.remoteAddress);
     let nombreUsuario;
@@ -39,7 +38,7 @@ export async function recibirMensaje(req, res) {
     };
 
     if (mensaje.mensaje.startsWith(process.env.PREFIJO)) {
-        propiedadesMensaje = await comprobarMensaje(mensaje, ip, req.query.chat);
+        propiedadesMensaje = await comprobarMensaje(mensaje, ip, chatId || "default");
     }
     
     if (propiedadesMensaje.mostrar) {

@@ -2,9 +2,11 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 main {
+    background-color: gray;
     padding: 1rem;
     display: grid;
     gap: 1rem;
@@ -22,6 +24,7 @@ main {
     overflow-y: scroll;
     border: 1px solid black;
     padding: 1rem;
+    background-color: white;
 }
 
 #botones-arriba {
@@ -29,21 +32,32 @@ main {
     height: fit-content;
 }
 
+#botones-arriba > * {
+    border: 1px solid black;
+    padding: .2rem;
+}
+
 #salas {
     grid-area: salas;
     border: 1px solid black;
     display: flex;
     flex-direction: column;
+    background-color: #696969;
 }
 
 .salas {
-    height: 3rem;
+    background-color: white;
+    height: 2rem;
     display: flex;
     padding: 1rem;
     align-items: center;
     color: black;
     text-decoration: none;
     border-bottom: 1px solid gray;
+}
+
+.salas:hover {
+    background-color: #b6b6b6;
 }
 
 #inputs {
@@ -53,14 +67,21 @@ main {
 }
 
 #mensaje {
+    border: 1px solid black;
     padding: .2rem;
     flex-grow: 7;
 }
 
 #chatear, #insertar-imagen {
+    border: 1px solid black;
     flex-grow: 1;
 }
 
 .respuesta-chat {
     color: blue;
+}
+
+button:hover {
+    background-color: #b6b6b6;
+    cursor: pointer;
 }

@@ -1,7 +1,5 @@
 let ultimoId = -1
 let tieneMensajesNuevos = false;
-let notificacionesActivadas = Notification.permission === "granted";
-let notificacionesUsuario = notificacionesActivadas;
 
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
@@ -15,7 +13,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const botonChatear = document.getElementById("chatear")
     const mensajeChat = document.getElementById("mensaje")
     const nuevoNombre = document.getElementById("nombre")
-    const botonNotificaciones = document.getElementById("notificaciones")
     const insertarImagen = document.getElementById("insertar-imagen")
     const contenedorSalas = document.getElementById("salas")
 
@@ -29,7 +26,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     contenedorSalas.innerHTML = textoSalas
 
-    botonNotificaciones.innerHTML = notificacionesUsuario ? "Notificaciones activadas" : "Notificaciones desactivadas";
 
     botonCambiarNombre.addEventListener("click", () => {
         cambiarNombre(nuevoNombre)
@@ -50,26 +46,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     mensajeChat.addEventListener("keydown", (e) => {
         if (e.key == "Enter") chatear(mensajeChat)
     })
-
-    botonNotificaciones.addEventListener("click", async (e) => {
-        e.preventDefault();
-
-        if (!("Notification" in window)) {
-            alert("Este navegador no soporta notificaciones.");
-            return;
-        }
-
-        if (Notification.permission !== "granted") {
-            const permiso = await Notification.requestPermission();
-            if (permiso !== "granted") {
-                alert("No se pudieron activar las notificaciones.");
-                return;
-            }
-        }
-
-        notificacionesUsuario = !notificacionesUsuario;
-        botonNotificaciones.innerHTML = notificacionesUsuario ? "Notificaciones activadas" : "Notificaciones desactivadas";
-    });
 
     setInterval(recibirChat, 1000)
 })
@@ -159,10 +135,6 @@ async function recibirChat() {
                 if (document.visibilityState !== "visible" && !tieneMensajesNuevos) {
                     document.title = "Chat ●";
                     tieneMensajesNuevos = true;
-
-                    if (notificacionesUsuario && Notification.permission === "granted") {
-                        new Notification(e.usuario, { body: e.mensaje });
-                    }
                 }
             })
             cuadroChat.innerHTML = chat
