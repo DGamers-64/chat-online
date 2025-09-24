@@ -10,13 +10,24 @@ document.addEventListener("visibilitychange", () => {
     }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const botonCambiarNombre = document.getElementById("cambiar-nombre-boton")
     const botonChatear = document.getElementById("chatear")
     const mensajeChat = document.getElementById("mensaje")
     const nuevoNombre = document.getElementById("nombre")
     const botonNotificaciones = document.getElementById("notificaciones")
     const insertarImagen = document.getElementById("insertar-imagen")
+    const contenedorSalas = document.getElementById("salas")
+
+    const salas = await obtenerSalas()
+
+    let textoSalas = ""
+
+    for (const [k, e] of Object.entries(salas)) {
+        textoSalas += `<a class='salas' href='./?chat=${k}'>${e.nombre}</a>`
+    }
+
+    contenedorSalas.innerHTML = textoSalas
 
     botonNotificaciones.innerHTML = notificacionesUsuario ? "Notificaciones activadas" : "Notificaciones desactivadas";
 
@@ -29,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     insertarImagen.addEventListener("click", () => {
-        chatear(`<img src="${mensajeChat}">`)
+        chatear(`<img src="${mensajeChat.value}">`)
     })
 
     botonChatear.addEventListener("click", () => {
@@ -63,6 +74,17 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(recibirChat, 1000)
 })
 
+async function obtenerSalas() {
+    let salas = {}
+    await fetch(`${window.location.origin}/salas`)
+        .then(res => res.json())
+        .then(data => {
+            salas = data
+        })
+    
+    return salas
+}
+
 function cambiarNombre(nuevoNombre) {
     fetch(`${window.location.origin}/nombre`, {
         method: "POST",
@@ -73,19 +95,26 @@ function cambiarNombre(nuevoNombre) {
 }
 
 function chatear(mensajeChat) {
-    fetch(`${window.location.origin}/chat`, {
+    let params = new URL(document.location.toString()).searchParams;
+    let chatId = params.get("chat");
+
+    fetch(`${window.location.origin}/salas/${chatId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mensaje: mensajeChat.value })
     })
+
     mensajeChat.value = ""
 }
 
 async function recibirChat() {
-    const cuadroChat = document.getElementById("chat")
-    const estabaAbajo = cuadroChat.scrollTop + cuadroChat.clientHeight >= cuadroChat.scrollHeight - 5
+    const cuadroChat = document.getElementById("chat");
+    const estabaAbajo = cuadroChat.scrollTop + cuadroChat.clientHeight >= cuadroChat.scrollHeight - 5;
 
-    await fetch(`${window.location.origin}/chat?id=${ultimoId + 1}`)
+    let params = new URL(document.location.toString()).searchParams;
+    let chatId = params.get("chat");
+
+    await fetch(`${window.location.origin}/salas/${chatId}?id=${ultimoId + 1}`)
         .then(res => res.json())
         .then(data => {
             let chat = cuadroChat.innerHTML
@@ -137,9 +166,6 @@ async function recibirChat() {
                 }
             })
             cuadroChat.innerHTML = chat
-        })
-        .catch((e) => {
-            cuadroChat.innerHTML = "<h1>Chat cerrado</h1>"
         })
 
     if (estabaAbajo) {

@@ -5,7 +5,7 @@ export async function ban(ip) {
 
     if (!blacklist.includes(ip)) blacklist.push(ip);
 
-    fs.writeFileSync("./listas/whitelist.json", JSON.stringify(whitelist, null, 2));
+    fs.writeFileSync("./listas/whitelist.json", JSON.stringify(whitelist, null, 4));
 
     return { mostrar: false, mensajeSistema: {
         mensaje: `${ip} ha sido baneado`

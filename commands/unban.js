@@ -6,7 +6,7 @@ export async function unban(ip) {
     const idx = blacklist.indexOf(ip);
     if (idx > -1) blacklist.splice(idx, 1);
 
-    fs.writeFileSync("./listas/blacklist.json", JSON.stringify(blacklist, null, 2));
+    fs.writeFileSync("./listas/blacklist.json", JSON.stringify(blacklist, null, 4));
 
     return { mostrar: false, mensajeSistema: {
         mensaje: `${ip} ha sido desbaneado`

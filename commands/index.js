@@ -2,9 +2,9 @@ import { dados } from "./dados.js";
 import { ayuda } from "./ayuda.js";
 import { ban } from "./ban.js";
 import { unban } from "./unban.js";
-import administradores from "../listas/administradores.json" with { type: "json" };
+import salas from "../listas/salas.json" with { type: "json" };
 
-export async function comprobarMensaje(mensaje, ip) {
+export async function comprobarMensaje(mensaje, ip, chatId) {
     const comandos = {
         dados: { fn: (args) => dados(args[0]), roles: ["user", "admin"] },
         ayuda: { fn: () => ayuda(), roles: ["user", "admin"] },
@@ -17,7 +17,6 @@ export async function comprobarMensaje(mensaje, ip) {
     let propiedadesMensaje = {
         mostrar: true,
         mensajeSistema: {            
-            id: global.id,
             timestamp: Date.now(),
             usuario: `SISTEMA`
         }
@@ -29,7 +28,7 @@ export async function comprobarMensaje(mensaje, ip) {
     const nombreComando = partes[0];
     const argumentos = partes.slice(1);
 
-    const rol = administradores.includes(ip) ? "admin" : "user";
+    const rol = salas[chatId].administradores.includes(ip) ? "admin" : "user";
     
     const cmd = comandos[nombreComando];
     if (!cmd) return propiedadesMensaje;
