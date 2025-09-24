@@ -34,6 +34,10 @@ export async function comprobarMensaje(mensaje, ip, chatId, chatActual) {
     const nombreComando = partes[0];
     const argumentos = partes.slice(1);
 
+    if (!salas[chatId]) {
+        chatId = "default"
+    }
+
     const rol = salas[chatId].administradores.includes(ip) ? "admin" : "user";
     
     const cmd = comandos[nombreComando];
