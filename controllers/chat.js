@@ -57,7 +57,7 @@ export async function recibirMensaje(req, res) {
         chatActual.push(mensajeSistema);
     }
 
-    console.log(`${styleText("blue", "NUEVO MENSAJE")}: #${mensaje.id} ${mensaje.timestamp} ${ip} : ${mensaje.mensaje}`);
+    console.log(`${styleText("blue", "NUEVO MENSAJE")}: ${chatId} | #${mensaje.id} | ${mensaje.timestamp} | ${ip} : ${mensaje.mensaje}`);
 
     fs.writeFile(salaActual.archivo, JSON.stringify(chatActual, null, 4));
 
