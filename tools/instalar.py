@@ -3,6 +3,7 @@ import os
 
 blacklist = []
 whitelist = []
+administradores = []
 chat_default = []
 nombres = {}
 salas = {
@@ -29,6 +30,9 @@ with open(os.path.join(BASE_DIR, "listas", "blacklist.json"), 'w', encoding="utf
 with open(os.path.join(BASE_DIR, "listas", "whitelist.json"), 'w', encoding="utf-8") as f:
     json.dump(whitelist, f, indent=4, ensure_ascii=False)
 
+with open(os.path.join(BASE_DIR, "listas", "administradores.json"), 'w', encoding="utf-8") as f:
+    json.dump(administradores, f, indent=4, ensure_ascii=False)
+
 with open(os.path.join(BASE_DIR, "salas", "chat-default.json"), 'w', encoding="utf-8") as f:
     json.dump(chat_default, f, indent=4, ensure_ascii=False)
 
@@ -37,3 +41,5 @@ with open(os.path.join(BASE_DIR, "listas", "nombres.json"), 'w', encoding="utf-8
 
 with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w', encoding="utf-8") as f:
     json.dump(salas, f, indent=4, ensure_ascii=False)
+
+os.rename(os.path.join(BASE_DIR, ".env.template"), os.path.join(BASE_DIR, ".env"))
