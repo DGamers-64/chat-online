@@ -13,3 +13,11 @@ export function addNombre(req, res) {
 
     res.send()
 }
+
+export function getNombre() {
+    const nombres = JSON.parse(fs.readFileSync("./listas/nombres.json", "utf-8"));
+    
+    if (nombres[limpiarIP(req.socket.remoteAddress)]) {}
+
+    res.send(nombres[limpiarIP(req.socket.remoteAddress)])
+}

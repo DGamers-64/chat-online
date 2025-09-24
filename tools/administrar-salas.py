@@ -35,7 +35,37 @@ def borrarSala(salasInfo, sala):
         json.dump(salasInfo, f, indent=4, ensure_ascii=False)
 
 def editarSala(salasInfo, sala):
-    pass
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    print("1. Vaciar chat")
+    print("2. Añadir administradores")
+    print("3. Quitar administradores")
+    print(f"4. Cambiar visibilidad (actual: {salasInfo[sala]["visibilidad"]})")
+    opcion = int(input("Introduce una opción > "))
+    print("------------------------------------")
+
+    match opcion:
+        case 1:
+            with open(os.path.join(BASE_DIR, salasInfo[sala]["archivo"].lstrip("./")), 'w') as f:
+                json.dump([], f, indent=4, ensure_ascii=False)
+        
+        case 2:
+            administrador = input("Escribe la ip del administrador a añadir > ")
+            salasInfo[sala]["administradores"].append(administrador)
+            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w') as f:
+                json.dump(salasInfo, f, indent=4, ensure_ascii=False)
+        
+        case 3:
+            administrador = input("Escribe la ip del administrador a quitar > ")
+            salasInfo[sala]["administradores"].remove(administrador)
+            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w') as f:
+                json.dump(salasInfo, f, indent=4, ensure_ascii=False)
+        
+        case 4:
+            if salasInfo[sala]["visibilidad"] == "publico":
+                salasInfo[sala]["visibilidad"] = "privado"
+            else:
+                salasInfo[sala]["visibilidad"] = "publico"
 
 salasInfo = {}
 
@@ -51,6 +81,7 @@ print("2. Borrar sala")
 print("3. Editar sala")
 print("4. Cerrar")
 opcion = int(input("Elige una opción > "))
+print("------------------------------------")
 
 match opcion:
     case 1:
@@ -64,6 +95,7 @@ for x, y in salasInfo.items():
     print(f"{x}")
 
 sala = input("Elige una clave de sala > ")
+print("------------------------------------")
 
 match opcion:
     case 2:

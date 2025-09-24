@@ -1,5 +1,6 @@
 let ultimoId = -1
 let tieneMensajesNuevos = false;
+let historialChat = [];
 
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
@@ -15,7 +16,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const nuevoNombre = document.getElementById("nombre")
     const insertarImagen = document.getElementById("insertar-imagen")
     const contenedorSalas = document.getElementById("salas")
+    const contenedorHora = document.getElementById("hora")
 
+    await fetch(`${window.location.origin}/nombre`)
+        .then(res => res.json())
+        .then(data => document.getElementById("nombre-actual").textContent = data || "Sin nombre")
+
+    actualizarHora(contenedorHora)
     const salas = await obtenerSalas()
 
     let textoSalas = ""
@@ -47,6 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.key == "Enter") chatear(mensajeChat)
     })
 
+    setInterval(() => actualizarHora(contenedorHora), 1000)
     setInterval(recibirChat, 1000)
 })
 
@@ -67,6 +75,8 @@ function cambiarNombre(nuevoNombre) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre: nuevoNombre.value })
     })
+    document.getElementById("nombre-actual").textContent = nuevoNombre.value
+    
     nuevoNombre.value = ""
 }
 
@@ -97,17 +107,18 @@ async function recibirChat() {
 
             data.forEach(e => {
                 const tiempo = new Date(e.timestamp)
+                historialChat.push(e)
 
                 let respuesta = false
                 let mensajeRespondido
 
                 if (e.mensaje.startsWith("@")) {
                     let id = e.mensaje.split("@")[1]
-                    mensajeRespondido = data.find((m) => m.id == id)
+                    mensajeRespondido = historialChat.find((m) => m.id == id)
                     respuesta = true
                 }
 
-                if (!respuesta) {
+                if (!respuesta || !mensajeRespondido) {
                     chat += `<p id="msg-${e.id}">
                                 <span class='id-chat'>#${e.id.toString().padStart(4, "0")}</span> 
                                 <span class='horas-chat'>
@@ -115,19 +126,19 @@ async function recibirChat() {
                                 </span> 
                                 | <span class='nombre-chat'>${e.usuario}</span>: 
                                 <span class='mensaje-chat'>${e.mensaje}</span>
-                             </p>`
+                            </p>`
                 } else {
                     chat += `<a href="#msg-${mensajeRespondido.id}" class="respuesta-chat">
                                 &gt; ${mensajeRespondido.usuario}: ${mensajeRespondido.mensaje}
-                             </a>
-                             <p class="respuesta-chat" id="msg-${e.id}">
+                            </a>
+                            <p class="respuesta-chat" id="msg-${e.id}">
                                 <span class='id-chat'>#${e.id.toString().padStart(4, "0")}</span> 
                                 <span class='horas-chat'>
                                     ${tiempo.getHours().toString().padStart(2, "0")}:${tiempo.getMinutes().toString().padStart(2, "0")}:${tiempo.getSeconds().toString().padStart(2, "0")}
                                 </span> 
                                 | <span class='nombre-chat'>${e.usuario}</span>: 
                                 <span class='mensaje-chat'>${e.mensaje.split("@")[2]}</span>
-                             </p>`
+                            </p>`
                 }
 
                 ultimoId = e.id
@@ -145,3 +156,7 @@ async function recibirChat() {
     }
 }
 
+function actualizarHora(contenedorHora) {
+    const horaActual = new Date()
+    contenedorHora.innerHTML = `${horaActual.getHours().toString().padStart(2, "0")}:${horaActual.getMinutes().toString().padStart(2, "0")}:${horaActual.getSeconds().toString().padStart(2, "0")}`
+}

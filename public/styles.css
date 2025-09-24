@@ -14,9 +14,31 @@ main {
     grid-template-areas: 
     "botones-arriba botones-arriba"
     "chat salas"
-    "inputs inputs";
+    "inputs salas";
     grid-template-columns: 7fr 1fr;
     grid-template-rows: auto 1fr auto;
+}
+
+#nombre-actual {
+    border: 1px solid black;
+    background-color: white;
+    padding: .3rem;
+    width: 7rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#hora {
+    border: 1px solid black;
+    background-color: white;
+    padding: .3rem;
+    width: 7rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #chat {
@@ -28,13 +50,20 @@ main {
 }
 
 #botones-arriba {
+    display: flex;
     grid-area: botones-arriba;
-    height: fit-content;
+    height: 2rem;
+    gap: 1rem;
 }
 
 #botones-arriba > * {
     border: 1px solid black;
     padding: .2rem;
+    height: 100%;
+}
+
+#nombre {
+    width: 7rem;
 }
 
 #salas {
@@ -43,17 +72,19 @@ main {
     display: flex;
     flex-direction: column;
     background-color: #696969;
+    padding: .3rem;
+    gap: .3rem;
 }
 
 .salas {
     background-color: white;
-    height: 2rem;
+    height: 3rem;
     display: flex;
     padding: 1rem;
     align-items: center;
     color: black;
     text-decoration: none;
-    border-bottom: 1px solid gray;
+    border: 1px solid black;
 }
 
 .salas:hover {
