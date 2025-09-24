@@ -12,7 +12,7 @@ main {
     gap: 1rem;
     height: 100vh;
     grid-template-areas: 
-    "botones-arriba botones-arriba"
+    "botones-arriba salas"
     "chat salas"
     "inputs salas";
     grid-template-columns: 7fr 1fr;
@@ -63,7 +63,7 @@ main {
 }
 
 #nombre {
-    width: 7rem;
+    width: 15rem;
 }
 
 #salas {
@@ -110,6 +110,20 @@ main {
 
 .respuesta-chat {
     color: blue;
+}
+
+#fijados-container {
+    padding: 1rem;
+    overflow-y: scroll;
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    display: none;
+    width: 30%;
+    height: 80%;
+    background-color: gainsboro;
+    border: 1px solid black;
 }
 
 button:hover {

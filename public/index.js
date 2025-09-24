@@ -17,10 +17,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const insertarImagen = document.getElementById("insertar-imagen")
     const contenedorSalas = document.getElementById("salas")
     const contenedorHora = document.getElementById("hora")
+    const fijadosContainer = document.getElementById("fijados-container")
+    const botonFijados = document.getElementById("fijados")
 
     await fetch(`${window.location.origin}/nombre`)
         .then(res => res.json())
-        .then(data => document.getElementById("nombre-actual").textContent = data || "Sin nombre")
+        .then(data => document.getElementById("nombre-actual").textContent = data[0])
 
     actualizarHora(contenedorHora)
     const salas = await obtenerSalas()
@@ -53,6 +55,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     mensajeChat.addEventListener("keydown", (e) => {
         if (e.key == "Enter") chatear(mensajeChat)
     })
+
+    botonFijados.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        const rect = botonFijados.getBoundingClientRect();
+        fijadosContainer.style.top = `${rect.bottom + window.scrollY}px`;
+        fijadosContainer.style.left = `${rect.left + window.scrollX}px`;
+        
+        fijadosContainer.style.display = fijadosContainer.style.display == "block" ? "none" : "block";
+
+        actualizarFijados()
+    });
 
     setInterval(() => actualizarHora(contenedorHora), 1000)
     setInterval(recibirChat, 1000)
@@ -94,6 +108,7 @@ function chatear(mensajeChat) {
 }
 
 async function recibirChat() {
+    const fijadosContainer = document.getElementById("fijados-container")
     const cuadroChat = document.getElementById("chat");
     const estabaAbajo = cuadroChat.scrollTop + cuadroChat.clientHeight >= cuadroChat.scrollHeight - 5;
 
@@ -116,6 +131,17 @@ async function recibirChat() {
                     let id = e.mensaje.split("@")[1]
                     mensajeRespondido = historialChat.find((m) => m.id == id)
                     respuesta = true
+                }
+
+                if (e.fijado) {
+                    fijadosContainer.innerHTML += `<p>
+                                <span class='id-chat'>#${e.id.toString().padStart(4, "0")}</span> 
+                                <span class='horas-chat'>
+                                    ${tiempo.getHours().toString().padStart(2, "0")}:${tiempo.getMinutes().toString().padStart(2, "0")}:${tiempo.getSeconds().toString().padStart(2, "0")}
+                                </span> 
+                                | <span class='nombre-chat'>${e.usuario}</span>: 
+                                <span class='mensaje-chat'>${e.mensaje}</span>
+                            </p>`
                 }
 
                 if (!respuesta || !mensajeRespondido) {
@@ -159,4 +185,31 @@ async function recibirChat() {
 function actualizarHora(contenedorHora) {
     const horaActual = new Date()
     contenedorHora.innerHTML = `${horaActual.getHours().toString().padStart(2, "0")}:${horaActual.getMinutes().toString().padStart(2, "0")}:${horaActual.getSeconds().toString().padStart(2, "0")}`
+}
+
+async function actualizarFijados() {
+    const fijadosContainer = document.getElementById("fijados-container");
+    let params = new URL(document.location.toString()).searchParams;
+    let chatId = params.get("chat");
+
+    fijadosContainer.innerHTML = "";
+
+    await fetch(`${window.location.origin}/salas/${chatId}`)
+        .then(res => res.json())
+        .then(data => {
+            const fijados = data.filter(e => e.fijado)
+
+            fijados.forEach(e => {
+                const tiempo = new Date(e.timestamp);
+                fijadosContainer.innerHTML += `<p>
+                    <span class='id-chat'>#${e.id.toString().padStart(4, "0")}</span> 
+                    <span class='horas-chat'>
+                        ${tiempo.getHours().toString().padStart(2, "0")}:${tiempo.getMinutes().toString().padStart(2, "0")}:${tiempo.getSeconds().toString().padStart(2, "0")}
+                    </span> 
+                    | <span class='nombre-chat'>${e.usuario}</span>: 
+                    <span class='mensaje-chat'>${e.mensaje}</span>
+                </p>`;
+            });
+        })
+
 }

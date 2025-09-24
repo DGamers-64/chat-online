@@ -1,6 +1,6 @@
 import fs from "fs";
 
-export async function unban(ip) {
+export async function unwhite(ip) {
     const whitelist = JSON.parse(fs.readFileSync("./listas/whitelist.json", "utf-8"));
 
     const idx = whitelist.indexOf(ip);

@@ -29,6 +29,7 @@ export async function recibirMensaje(req, res) {
         id: chatActual.length,
         timestamp: Date.now(),
         usuario: `${nombreUsuario}`,
+        fijado: false,
         mensaje: req.body.mensaje
     };
 
@@ -38,7 +39,7 @@ export async function recibirMensaje(req, res) {
     };
 
     if (mensaje.mensaje.startsWith(process.env.PREFIJO)) {
-        propiedadesMensaje = await comprobarMensaje(mensaje, ip, chatId || "default");
+        propiedadesMensaje = await comprobarMensaje(mensaje, ip, chatId || "default", chatActual);
     }
     
     if (propiedadesMensaje.mostrar) {
@@ -50,6 +51,7 @@ export async function recibirMensaje(req, res) {
             id: chatActual.length,
             timestamp: Date.now(),
             usuario: "SISTEMA",
+            fijado: false,
             mensaje: propiedadesMensaje.mensajeSistema.mensaje
         };
 

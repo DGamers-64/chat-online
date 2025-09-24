@@ -2,7 +2,6 @@ import json
 import os
 
 def crearSala(salasInfo):
-    print("------------------------------------")
     nombre_clave = input("Nombre en clave de la sala > ")
     nombre_normal = input("Nombre familiar de la sala > ")
     visibilidad = input("Visibilidad (publico o privado) > ")
