@@ -10,12 +10,37 @@ document.addEventListener("visibilitychange", () => {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
+    let params = new URL(document.location.toString()).searchParams;
+    let chatId = params.get("chat")
+    const contenedorSalas = document.getElementById("salas")
+    const cuadroChat = document.getElementById("chat");
+
+    const salas = await obtenerSalas()
+    let textoSalas = ""
+
+    for (const [k, e] of Object.entries(salas)) {
+        textoSalas += `<a class='salas' href='./?chat=${k}'>${e.nombre}</a>`
+    }
+    
+    contenedorSalas.innerHTML = textoSalas
+    
+    if (!salas[chatId]) {
+        window.location.href = `${window.location.origin}?chat=default`
+    }
+
+    if (!chatId) {
+        cuadroChat.style.display = "flex"
+        cuadroChat.style.alignItems = "center"
+        cuadroChat.style.justifyContent = "center"
+        cuadroChat.innerHTML = "<h1 style='font-size: 4em;'>Selecciona una sala</h1>"
+        return
+    }
+
     const botonCambiarNombre = document.getElementById("cambiar-nombre-boton")
     const botonChatear = document.getElementById("chatear")
     const mensajeChat = document.getElementById("mensaje")
     const nuevoNombre = document.getElementById("nombre")
     const insertarImagen = document.getElementById("insertar-imagen")
-    const contenedorSalas = document.getElementById("salas")
     const contenedorHora = document.getElementById("hora")
     const fijadosContainer = document.getElementById("fijados-container")
     const botonFijados = document.getElementById("fijados")
@@ -25,15 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         .then(data => document.getElementById("nombre-actual").textContent = data[0])
 
     actualizarHora(contenedorHora)
-    const salas = await obtenerSalas()
-
-    let textoSalas = ""
-
-    for (const [k, e] of Object.entries(salas)) {
-        textoSalas += `<a class='salas' href='./?chat=${k}'>${e.nombre}</a>`
-    }
-
-    contenedorSalas.innerHTML = textoSalas
 
 
     botonCambiarNombre.addEventListener("click", () => {
@@ -96,7 +112,7 @@ function cambiarNombre(nuevoNombre) {
 
 function chatear(mensajeChat) {
     let params = new URL(document.location.toString()).searchParams;
-    let chatId = params.get("chat");
+    let chatId = params.get("chat")
 
     fetch(`${window.location.origin}/salas/${chatId}`, {
         method: "POST",

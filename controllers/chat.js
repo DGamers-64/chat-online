@@ -9,9 +9,9 @@ export async function enviarInfoSalas(req, res) {
 }
 
 export async function recibirMensaje(req, res) {
-    const { chatId } = req.params
+    const chatId = req.params.chatId;
     const infoSalas = JSON.parse(await fs.readFile("./listas/salas.json", "utf-8"));
-    const salaActual = infoSalas[chatId] || infoSalas["default"]
+    const salaActual = infoSalas[chatId]
     const chatActual = JSON.parse(await fs.readFile(salaActual.archivo, "utf-8"));
 
     const ip = limpiarIP(req.socket.remoteAddress);
@@ -39,7 +39,7 @@ export async function recibirMensaje(req, res) {
     };
 
     if (mensaje.mensaje.startsWith(process.env.PREFIJO)) {
-        propiedadesMensaje = await comprobarMensaje(mensaje, ip, chatId || "default", chatActual);
+        propiedadesMensaje = await comprobarMensaje(mensaje, ip, chatId, chatActual);
     }
     
     if (propiedadesMensaje.mostrar) {
@@ -68,7 +68,7 @@ export async function recibirMensaje(req, res) {
 export async function enviarChat(req, res) {
     const { chatId } = req.params;
     const infoSalas = JSON.parse(await fs.readFile("./listas/salas.json", "utf-8"));
-    const salaActual = infoSalas[chatId] || infoSalas["default"];
+    const salaActual = infoSalas[chatId]
     const chatActual = JSON.parse(await fs.readFile(salaActual.archivo, "utf-8"));
 
     const desdeId = parseInt(req.query.id, 10);

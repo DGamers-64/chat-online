@@ -1,11 +1,12 @@
 import fs from "fs";
 
-export async function ban(ip) {
-    const blacklist = JSON.parse(fs.readFileSync("./listas/blacklist.json"));
+export async function ban(ip, chatId) {
+    const salas = JSON.parse(fs.readFileSync("./listas/salas.json"));
+    const chat = salas[chatId]
 
-    if (!blacklist.includes(ip)) blacklist.push(ip);
+    if (!chat.blacklist.includes(ip)) chat.blacklist.push(ip);
 
-    fs.writeFileSync("./listas/whitelist.json", JSON.stringify(whitelist, null, 4));
+    fs.writeFileSync("./listas/salas.json", JSON.stringify(salas, null, 4));
 
     return { mostrar: false, mensajeSistema: {
         mensaje: `${ip} ha sido baneado`

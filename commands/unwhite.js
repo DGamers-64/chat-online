@@ -1,14 +1,15 @@
 import fs from "fs";
 
-export async function unwhite(ip) {
-    const whitelist = JSON.parse(fs.readFileSync("./listas/whitelist.json", "utf-8"));
+export async function unwhite(ip, chatId) {
+    const salas = JSON.parse(fs.readFileSync("./listas/salas.json"));
+    const chat = salas[chatId]
 
-    const idx = whitelist.indexOf(ip);
-    if (idx > -1) whitelist.splice(idx, 1);
+    const idx = chat.whitelist.indexOf(ip);
+    if (idx > -1) chat.whitelist.splice(idx, 1);
 
-    fs.writeFileSync("./listas/whitelist.json", JSON.stringify(whitelist, null, 4));
+    fs.writeFileSync("./listas/salas.json", JSON.stringify(salas, null, 4));
 
     return { mostrar: false, mensajeSistema: {
-        mensaje: `${ip} ha sido quitado de la lista blanca`
+        mensaje: `${ip} ha sido deswhislisteado`
     } };
 }
