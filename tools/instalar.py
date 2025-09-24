@@ -1,4 +1,5 @@
-import json, os
+import json
+import os
 
 blacklist = []
 whitelist = []
@@ -12,28 +13,27 @@ salas = {
         ],
         "visibilidad": "publico",
         "archivo": "./salas/chat-default.json",
-        "blacklist": [
-
-        ],
-        "whitelist": [
-            
-        ]
+        "blacklist": [],
+        "whitelist": []
     }
 }
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-with open(os.path.join(BASE_DIR, "listas", "blacklist.json"), 'w') as f:
-    json.dump(blacklist, f, indent=4)
+os.makedirs(os.path.join(BASE_DIR, "listas"), exist_ok=True)
+os.makedirs(os.path.join(BASE_DIR, "salas"), exist_ok=True)
 
-with open(os.path.join(BASE_DIR, "listas", "whitelist.json"), 'w') as f:
-    json.dump(whitelist, f, indent=4)
+with open(os.path.join(BASE_DIR, "listas", "blacklist.json"), 'w', encoding="utf-8") as f:
+    json.dump(blacklist, f, indent=4, ensure_ascii=False)
 
-with open(os.path.join(BASE_DIR, "salas", "chat-default.json"), 'w') as f:
-    json.dump(chat_default, f, indent=4)
+with open(os.path.join(BASE_DIR, "listas", "whitelist.json"), 'w', encoding="utf-8") as f:
+    json.dump(whitelist, f, indent=4, ensure_ascii=False)
 
-with open(os.path.join(BASE_DIR, "listas", "nombres.json"), 'w') as f:
-    json.dump(nombres, f, indent=4)
+with open(os.path.join(BASE_DIR, "salas", "chat-default.json"), 'w', encoding="utf-8") as f:
+    json.dump(chat_default, f, indent=4, ensure_ascii=False)
 
-with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w') as f:
-    json.dump(salas, f, indent=4)
+with open(os.path.join(BASE_DIR, "listas", "nombres.json"), 'w', encoding="utf-8") as f:
+    json.dump(nombres, f, indent=4, ensure_ascii=False)
+
+with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w', encoding="utf-8") as f:
+    json.dump(salas, f, indent=4, ensure_ascii=False)
