@@ -1,4 +1,4 @@
 node_modules
 console.log
 .env
-.json
+*.json
