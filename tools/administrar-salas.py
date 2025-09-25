@@ -39,7 +39,11 @@ def editarSala(salasInfo, sala):
     print("1. Vaciar chat")
     print("2. Añadir administradores")
     print("3. Quitar administradores")
-    print(f"4. Cambiar visibilidad (actual: {salasInfo[sala]["visibilidad"]})")
+    print("4. Añadir blacklist")
+    print("5. Quitar blacklist")
+    print("6. Añadir whitelist")
+    print("7. Quitar whitelist")
+    print(f"8. Cambiar visibilidad (actual: {salasInfo[sala]["visibilidad"]})")
     opcion = int(input("Introduce una opción > "))
     print("------------------------------------")
 
@@ -51,16 +55,40 @@ def editarSala(salasInfo, sala):
         case 2:
             administrador = input("Escribe la ip del administrador a añadir > ")
             salasInfo[sala]["administradores"].append(administrador)
-            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w') as f:
+            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w', encoding="utf-8") as f:
                 json.dump(salasInfo, f, indent=4, ensure_ascii=False)
         
         case 3:
             administrador = input("Escribe la ip del administrador a quitar > ")
             salasInfo[sala]["administradores"].remove(administrador)
-            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w') as f:
+            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w', encoding="utf-8") as f:
                 json.dump(salasInfo, f, indent=4, ensure_ascii=False)
         
         case 4:
+            baneado = input("Escribe la ip del baneado a añadir > ")
+            salasInfo[sala]["blacklist"].append(baneado)
+            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w', encoding="utf-8") as f:
+                json.dump(salasInfo, f, indent=4, ensure_ascii=False)
+        
+        case 5:
+            baneado = input("Escribe la ip del baneado a quitar > ")
+            salasInfo[sala]["blacklist"].remove(baneado)
+            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w', encoding="utf-8") as f:
+                json.dump(salasInfo, f, indent=4, ensure_ascii=False)
+        
+        case 6:
+            whitlisteado = input("Escribe la ip del whitlisteado a añadir > ")
+            salasInfo[sala]["whitelist"].append(whitlisteado)
+            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w', encoding="utf-8") as f:
+                json.dump(salasInfo, f, indent=4, ensure_ascii=False)
+        
+        case 7:
+            whitlisteado = input("Escribe la ip del whitlisteado a quitar > ")
+            salasInfo[sala]["whitelist"].remove(whitlisteado)
+            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w', encoding="utf-8") as f:
+                json.dump(salasInfo, f, indent=4, ensure_ascii=False)
+        
+        case 8:
             if salasInfo[sala]["visibilidad"] == "publico":
                 salasInfo[sala]["visibilidad"] = "privado"
             else:

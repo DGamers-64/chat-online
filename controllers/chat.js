@@ -5,7 +5,19 @@ import fs from "fs/promises";
 
 export async function enviarInfoSalas(req, res) {
     const infoSalas = JSON.parse(await fs.readFile("./listas/salas.json", "utf-8"));
-    res.send(infoSalas)
+    const ip = limpiarIP(req.socket.remoteAddress)
+
+    const salasLimpias = Object.fromEntries(
+    Object.entries(infoSalas).filter(([clave, e]) => {
+        if (e.visibilidad === "publico") {
+        return !e.blacklist.includes(ip);
+        } else if (e.visibilidad === "privado") {
+        return e.whitelist.includes(ip);
+        }
+    })
+    );
+
+    res.send(salasLimpias)
 }
 
 export async function recibirMensaje(req, res) {
