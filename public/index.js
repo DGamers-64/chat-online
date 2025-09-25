@@ -23,12 +23,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     
     contenedorSalas.innerHTML = textoSalas
-    
-    if (!salas[chatId]) {
-        window.location.href = `${window.location.origin}?chat=default`
-    }
 
-    if (!chatId) {
+    if (!salas[chatId] || !chatId) {
         cuadroChat.style.display = "flex"
         cuadroChat.style.alignItems = "center"
         cuadroChat.style.justifyContent = "center"
