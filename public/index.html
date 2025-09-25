@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="juegos.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
     <script src="index.js"></script>
+    <script src="juegos.js"></script>
 </head>
 <body>
     <main>
@@ -15,8 +17,16 @@
             <span id="nombre-actual"></span>
             <span id="hora"></span>
             <button id="fijados">Mensajes fijados</button>
+            <button id="juegos">Juegos</button>
         </div>
         <div id="chat"></div>
+        <div id="juegos-container">
+            <div id="contenedor-botones-juegos">
+                <div class="boton-entrada-juego" id="entrada-juego-sudoku"></div>
+                <div class="boton-entrada-juego" id="entrada-juego-snake"></div>
+                <div class="boton-entrada-juego" id="entrada-juego-ahorcado"></div>
+            </div>
+        </div>
         <div id="fijados-container"></div>
         <div id="salas"></div>
         <section id="inputs">
