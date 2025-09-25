@@ -126,6 +126,10 @@ main {
     border: 1px solid black;
 }
 
+button {
+    background-color: #e0e0e0;
+}
+
 button:hover {
     background-color: #b6b6b6;
     cursor: pointer;
