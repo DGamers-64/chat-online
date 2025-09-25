@@ -44,6 +44,7 @@ def editarSala(salasInfo, sala):
     print("6. Añadir whitelist")
     print("7. Quitar whitelist")
     print(f"8. Cambiar visibilidad (actual: {salasInfo[sala]["visibilidad"]})")
+    print("9. Cerrar")
     opcion = int(input("Introduce una opción > "))
     print("------------------------------------")
 
@@ -93,6 +94,8 @@ def editarSala(salasInfo, sala):
                 salasInfo[sala]["visibilidad"] = "privado"
             else:
                 salasInfo[sala]["visibilidad"] = "publico"
+            with open(os.path.join(BASE_DIR, "listas", "salas.json"), 'w', encoding="utf-8") as f:
+                json.dump(salasInfo, f, indent=4, ensure_ascii=False)
 
 salasInfo = {}
 
@@ -130,6 +133,3 @@ match opcion:
 
     case 3:
         editarSala(salasInfo, sala)
-
-    case _:
-        quit()
