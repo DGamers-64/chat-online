@@ -1,9 +1,22 @@
-export async function desfijar(id, chatActual) {
-    const mensaje = chatActual.find(e => e.id === Number(id));
-    if (!mensaje) {
-        return { mostrar: true, mensajeSistema: { mensaje: `No se encontró el mensaje con id ${id}` } };
-    }
-    mensaje.fijado = false;
+export default {
+    name: "desfijar",
+    description: "Desfija un mensaje",
+    roles: ["admin"],
 
-    return { mostrar: true, mensajeSistema: { mensaje: `El mensaje ${mensaje.id} ha sido desfijado` } };
-}
+    execute: async ({ args, chatActual }) => {
+        const mensaje = chatActual.find(e => e.id === Number(args[0]));
+        if (!mensaje) {
+            return { mostrar: true, mensajeSistema: { mensaje: `No se encontró el mensaje con id ${args[0]}` } };
+        }
+        mensaje.fijado = false;
+
+        return {
+            mostrar: true,
+            mensajeSistema: {
+                timestamp: Date.now(),
+                usuario: "SISTEMA",
+                mensaje: `El mensaje ${mensaje.id} ha sido desfijado`
+            }
+        };
+    }
+};

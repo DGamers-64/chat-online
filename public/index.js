@@ -145,38 +145,26 @@ async function recibirChat() {
                     respuesta = true
                 }
 
-                if (e.fijado) {
-                    fijadosContainer.innerHTML += `<p>
+                const mensajePlantilla = `<p id="msg-${e.id}">
                                 <span class='id-chat'>#${e.id.toString().padStart(4, "0")}</span> 
                                 <span class='horas-chat'>
-                                    ${tiempo.getHours().toString().padStart(2, "0")}:${tiempo.getMinutes().toString().padStart(2, "0")}:${tiempo.getSeconds().toString().padStart(2, "0")}
+                                    ${tiempo.toLocaleString("es-ES", { timeZone: "UTC" })}
                                 </span> 
                                 | <span class='nombre-chat'>${e.usuario}</span>: 
                                 <span class='mensaje-chat'>${e.mensaje}</span>
                             </p>`
+
+                if (e.fijado) {
+                    fijadosContainer.innerHTML += mensajePlantilla
                 }
 
                 if (!respuesta || !mensajeRespondido) {
-                    chat += `<p id="msg-${e.id}">
-                                <span class='id-chat'>#${e.id.toString().padStart(4, "0")}</span> 
-                                <span class='horas-chat'>
-                                    ${tiempo.getHours().toString().padStart(2, "0")}:${tiempo.getMinutes().toString().padStart(2, "0")}:${tiempo.getSeconds().toString().padStart(2, "0")}
-                                </span> 
-                                | <span class='nombre-chat'>${e.usuario}</span>: 
-                                <span class='mensaje-chat'>${e.mensaje}</span>
-                            </p>`
+                    chat += mensajePlantilla
                 } else {
                     chat += `<a href="#msg-${mensajeRespondido.id}" class="respuesta-chat">
                                 &gt; ${mensajeRespondido.usuario}: ${mensajeRespondido.mensaje}
                             </a>
-                            <p class="respuesta-chat" id="msg-${e.id}">
-                                <span class='id-chat'>#${e.id.toString().padStart(4, "0")}</span> 
-                                <span class='horas-chat'>
-                                    ${tiempo.getHours().toString().padStart(2, "0")}:${tiempo.getMinutes().toString().padStart(2, "0")}:${tiempo.getSeconds().toString().padStart(2, "0")}
-                                </span> 
-                                | <span class='nombre-chat'>${e.usuario}</span>: 
-                                <span class='mensaje-chat'>${e.mensaje.split("@")[2]}</span>
-                            </p>`
+                            ${mensajePlantilla}`
                 }
 
                 ultimoId = e.id

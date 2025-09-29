@@ -1,15 +1,23 @@
 import fs from "fs";
 
-export async function unwhite(ip, chatId) {
-    const salas = JSON.parse(fs.readFileSync("./listas/salas.json"));
-    const chat = salas[chatId]
+export default {
+    name: "unwhite",
+    description: "Un comando para deswhitear a un usuario",
+    roles: ["admin"],
+    execute: async ({ args, chatId, salas }) => {
+        const ip = args[0]
+        const idx = salas[chatId].whitelist.indexOf(ip);
+        if (idx > -1) salas[chatId].whitelist.splice(idx, 1);
 
-    const idx = chat.whitelist.indexOf(ip);
-    if (idx > -1) chat.whitelist.splice(idx, 1);
+        fs.writeFileSync("./listas/salas.json", JSON.stringify(salas, null, 4));
 
-    fs.writeFileSync("./listas/salas.json", JSON.stringify(salas, null, 4));
-
-    return { mostrar: false, mensajeSistema: {
-        mensaje: `${ip} ha sido deswhislisteado`
-    } };
-}
+        return {
+            mostrar: true,
+            mensajeSistema: {
+                timestamp: Date.now(),
+                usuario: "SISTEMA",
+                mensaje: `${ip} ha sido deswhiteado`
+            }
+        };
+    }
+};
