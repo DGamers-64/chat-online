@@ -1,6 +1,7 @@
-import fs from "fs";
 import path from "path";
 import { pathToFileURL } from "url";
+import Mods from "../classes/Mods.js"
+import Archivos from "../classes/Archivos.js"
 
 import dados from "./dados.js";
 import ayuda from "./ayuda.js";
@@ -25,8 +26,8 @@ function cargarComandosNativos() {
 }
 
 export async function comprobarMensaje(mensaje, ip, chatId, chatActual) {
-    const salas = JSON.parse(fs.readFileSync("./listas/salas.json"));
-    const administradores = JSON.parse(fs.readFileSync("./listas/administradores.json"));
+    const salas = Archivos.devolverSalas()
+    const administradores = Archivos.devolverAdministradores()
 
     let propiedadesMensaje = {
         mostrar: true,
@@ -74,7 +75,7 @@ export async function comprobarMensaje(mensaje, ip, chatId, chatActual) {
 }
 
 async function cargarComandosMods() {
-    const modsConfig = JSON.parse(fs.readFileSync("./listas/mods.json"));
+    const modsConfig = Mods.buscarMods()
     const comandos = {};
 
     for (const [modName, config] of Object.entries(modsConfig)) {

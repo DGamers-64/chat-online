@@ -1,28 +1,30 @@
-import fs from "fs";
-import { limpiarIP } from "../functions/limpiarIP.js";
+import Utils from "../classes/Utils.js";
 import { styleText } from "node:util";
+import Archivos from "../classes/Archivos.js";
 
 export function addNombre(req, res) {
-    const nombres = JSON.parse(fs.readFileSync("./listas/nombres.json", "utf-8"));
+    const ip = Utils.limpiarIP(req.socket.remoteAddress)
+    const nombres = Archivos.devolverNombres()
 
-    nombres[limpiarIP(req.socket.remoteAddress)] = req.body.nombre
+    nombres[ip] = req.body.nombre
 
-    fs.writeFileSync("./listas/nombres.json", JSON.stringify(nombres, null, 4));
+    Archivos.escribirNombres(nombres)
     
-    console.log(`${styleText("yellow", "NOMBRE CAMBIADO")}: ${limpiarIP(req.socket.remoteAddress)} => ${req.body.nombre}`)
+    console.log(`${styleText("yellow", "NOMBRE CAMBIADO")}: ${ip} => ${req.body.nombre}`)
 
     res.send()
 }
 
 export function getNombre(req, res) {
-    const nombres = JSON.parse(fs.readFileSync("./listas/nombres.json", "utf-8"));
+    const ip = Utils.limpiarIP(req.socket.remoteAddress)
+    const nombres = Archivos.devolverNombres()
     
-    if (nombres[limpiarIP(req.socket.remoteAddress)]) {
-        const nombre = nombres[limpiarIP(req.socket.remoteAddress)]
+    if (nombres[ip]) {
+        const nombre = nombres[ip]
 
         res.json([nombre])
     } else {
-        res.json([limpiarIP(req.socket.remoteAddress)])
+        res.json([ip])
     }
 
 }

@@ -1,11 +1,11 @@
 import { comprobarMensaje } from '../commands/index.js'
 import { styleText } from "node:util";
-import { limpiarIP } from "../functions/limpiarIP.js";
-import fs from "fs/promises";
+import Utils from "../classes/Utils.js";
+import Archivos from '../classes/Archivos.js';
 
 export async function enviarInfoSalas(req, res) {
-    const infoSalas = JSON.parse(await fs.readFile("./listas/salas.json", "utf-8"));
-    const ip = limpiarIP(req.socket.remoteAddress)
+    const infoSalas = Archivos.devolverSalas()
+    const ip = Utils.limpiarIP(req.socket.remoteAddress)
 
     const salasLimpias = Object.fromEntries(
     Object.entries(infoSalas).filter(([clave, e]) => {
@@ -22,14 +22,12 @@ export async function enviarInfoSalas(req, res) {
 
 export async function recibirMensaje(req, res) {
     const chatId = req.params.chatId;
-    const infoSalas = JSON.parse(await fs.readFile("./listas/salas.json", "utf-8"));
-    const salaActual = infoSalas[chatId]
-    const chatActual = JSON.parse(await fs.readFile(salaActual.archivo, "utf-8"));
+    const chatActual = Archivos.devolverSalas(chatId)
 
-    const ip = limpiarIP(req.socket.remoteAddress);
+    const ip = Utils.limpiarIP(req.socket.remoteAddress);
     let nombreUsuario;
 
-    const nombres = JSON.parse(await fs.readFile("./listas/nombres.json", "utf-8"));
+    const nombres = Archivos.devolverNombres()
     
     if (!nombres[ip || "0.0.0.0"]) {
         nombreUsuario = ip;
@@ -72,16 +70,14 @@ export async function recibirMensaje(req, res) {
 
     console.log(`${styleText("blue", "NUEVO MENSAJE")}: ${chatId} | #${mensaje.id} | ${mensaje.timestamp} | ${ip} : ${mensaje.mensaje}`);
 
-    fs.writeFile(salaActual.archivo, JSON.stringify(chatActual, null, 4));
+    Archivos.escribirChat(chatId, chatActual)
 
     res.send()
 }
 
 export async function enviarChat(req, res) {
     const { chatId } = req.params;
-    const infoSalas = JSON.parse(await fs.readFile("./listas/salas.json", "utf-8"));
-    const salaActual = infoSalas[chatId]
-    const chatActual = JSON.parse(await fs.readFile(salaActual.archivo, "utf-8"));
+    const chatActual = Archivos.devolverChat(chatId)
 
     const desdeId = parseInt(req.query.id, 10);
     const mensajes = Number.isNaN(desdeId)

@@ -1,4 +1,4 @@
-import fs from "fs";
+import Archivos from "../classes/Archivos";
 
 export default {
     name: "unwhite",
@@ -9,7 +9,7 @@ export default {
         const idx = salas[chatId].whitelist.indexOf(ip);
         if (idx > -1) salas[chatId].whitelist.splice(idx, 1);
 
-        fs.writeFileSync("./listas/salas.json", JSON.stringify(salas, null, 4));
+        Archivos.escribirSalas(salas)
 
         return {
             mostrar: true,

@@ -1,4 +1,4 @@
-import fs from "fs";
+import Archivos from "../classes/Archivos";
 
 export default {
     name: "white",
@@ -7,7 +7,7 @@ export default {
     execute: async ({ args, chatId, salas }) => {
         const ip = args[0]
         if (!salas[chatId].whitelist.includes(ip)) salas[chatId].whitelist.push(ip);
-        fs.writeFileSync("./listas/salas.json", JSON.stringify(salas, null, 4));
+        Archivos.escribirSalas(salas)
         return {
             mostrar: true,
             mensajeSistema: {
