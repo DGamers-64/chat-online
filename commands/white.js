@@ -1,4 +1,4 @@
-import Archivos from "../classes/Archivos";
+import Archivos from "../classes/Archivos.js";
 
 export default {
     name: "white",

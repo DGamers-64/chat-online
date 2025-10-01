@@ -1,5 +1,6 @@
 import path from "path";
 import Utils from "../classes/Utils.js";
+import fs from "fs";
 
 export function logger(req, res, next) {
     if (req.method == "GET" && req.path == "/chat") {
