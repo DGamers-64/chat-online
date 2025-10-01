@@ -2,6 +2,30 @@ let ultimoId = -1
 let tieneMensajesNuevos = false;
 let historialChat = [];
 
+const socket = io()
+
+socket.on('server-signal', msg => {
+    if (msg.type == "nuevo-mensaje") {
+        recibirChat(msg.data)
+    } else if (msg.type == "nuevo-fijado") {
+
+    }
+
+    switch(msg.type) {
+    case 'saludar':
+        alert('El servidor te saluda!')
+        break
+    case 'actualizar':
+        console.log('Señal de actualización')
+        break
+    case 'alerta':
+        console.warn('¡Alerta del servidor!')
+        break
+    }
+})
+
+socket.emit('client-message', 'Hola desde el cliente')
+
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
         document.querySelector("link[rel~='icon']").href = "./img/faviconApagado.ico"
@@ -174,7 +198,7 @@ async function recibirChat() {
                     tieneMensajesNuevos = true;
                 }
             })
-            cuadroChat.textContent = chat
+            cuadroChat.innerHTML = chat
         })
 
     if (estabaAbajo) {

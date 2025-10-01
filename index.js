@@ -6,6 +6,8 @@ import { nombresRouter } from './routers/nombre.js';
 import { salasRouter } from './routers/salas.js';
 import Mods from './classes/Mods.js';
 import path from 'node:path';
+import http from 'node:http';
+import { Server } from 'socket.io';
 
 const PORT = process.env.PORT
 const app = express()
@@ -28,8 +30,24 @@ app.use("/nombre", nombresRouter)
 app.use("/salas", salasRouter)
 
 app.use((req, res) => { res.status(404).send('<h1>Error 404</h1>') })
+const server = http.createServer(app)
+const io = new Server(server)
 
-app.listen(PORT, () => {
+io.on('connection', (socket) => {
+    console.log(`Cliente conectado: ${socket.id}`)
+
+    socket.on('client-message', (msg) => {
+        console.log(`Mensaje del cliente ${socket.id}:`, msg)
+    })
+
+    setInterval(() => {
+        const señales = ['saludar', 'actualizar', 'alerta']
+        const señal = señales[Math.floor(Math.random() * señales.length)]
+        socket.emit('server-signal', { type: señal, data: `Acción: ${señal}` })
+    }, 5000)
+})
+
+server.listen(PORT, () => {
     let mods = Mods.buscarMods()
     mods = Object.keys(mods).join(", ")
 
