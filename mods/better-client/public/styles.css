@@ -168,3 +168,33 @@ button:hover {
 .nombre-chat {
     width: 70px;
 }
+
+.respuesta-chat {
+    color: white;
+    padding: 5px;
+    display: flex;
+    gap: 5px;
+    text-decoration: none;
+}
+
+.usuario-respuesta, .mensaje-respuesta, .id-respuesta {
+    text-align: center;
+    padding: 5px;
+    border: 1px solid white;
+    background-color: gray;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.id-respuesta {
+    width: 50px;
+}
+
+.usuario-respuesta {
+    width: 70px;
+}
+
+.cuadro-mensaje {
+    background-color: rgb(54, 54, 54);
+    border-radius: 5px;
+}

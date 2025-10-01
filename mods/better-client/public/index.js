@@ -142,15 +142,6 @@ async function recibirChat() {
                     mensajeRespondido = historialChat.find((m) => m.id == id)
                     respuesta = true
                 }
-
-                // const mensajePlantilla = `<p id="msg-${e.id}">
-                //                 <span class='id-chat'>#${e.id.toString().padStart(4, "0")}</span> 
-                //                 <span class='horas-chat'>
-                //                     ${tiempo.toLocaleString("es-ES", { timeZone: "UTC" })}
-                //                 </span> 
-                //                 | <span class='nombre-chat'>${e.usuario}</span>: 
-                //                 <span class='mensaje-chat'>${e.mensaje}</span>
-                //             </p>`
                 
                 const mensajePlantilla = document.createElement("p")
                 mensajePlantilla.id = `msg-${e.id}`
@@ -166,26 +157,46 @@ async function recibirChat() {
                 nombreChat.textContent = `${e.usuario}`
                 const mensajeChat = document.createElement("span")
                 mensajeChat.className = "mensaje-chat"
-                mensajeChat.textContent = e.mensaje
+                if (respuesta) {
+                    mensajeChat.textContent = e.mensaje.toString().split("@")[2]
+                } else {
+                    mensajeChat.textContent = e.mensaje
+                }
                 mensajePlantilla.appendChild(idChat)
                 mensajePlantilla.appendChild(horasChat)
                 mensajePlantilla.appendChild(nombreChat)
                 mensajePlantilla.appendChild(mensajeChat)
+
+                const cuadroMensaje = document.createElement("div")
+                cuadroMensaje.className = "cuadro-mensaje"
 
                 if (e.fijado) {
                     fijadosContainer.appendChild(mensajePlantilla)
                 }
 
                 if (!respuesta || !mensajeRespondido) {
-                    cuadroChat.appendChild(mensajePlantilla)
+                    cuadroMensaje.appendChild(mensajePlantilla)
                 } else {
                     const citadoRespuesta = document.createElement("a")
                     citadoRespuesta.href = `#msg-${mensajeRespondido.id}`
                     citadoRespuesta.className = "respuesta-chat"
-                    citadoRespuesta.textContent = ` > ${mensajeRespondido.usuario}: ${mensajeRespondido.mensaje}`
-                    cuadroChat.appendChild(citadoRespuesta)
-                    cuadroChat.appendChild(mensajePlantilla)
+                    const idOriginal = document.createElement("span")
+                    idOriginal.className = "id-respuesta"
+                    idOriginal.textContent = mensajeRespondido.id.toString().padStart(4, "0")
+                    const usuarioRespuesta = document.createElement("span")
+                    usuarioRespuesta.className = "usuario-respuesta"
+                    usuarioRespuesta.textContent = mensajeRespondido.usuario
+                    const mensajeRespuesta = document.createElement("span")
+                    mensajeRespuesta.className = "mensaje-respuesta"
+                    mensajeRespuesta.textContent = mensajeRespondido.mensaje
+                    citadoRespuesta.appendChild(idOriginal)
+                    citadoRespuesta.appendChild(usuarioRespuesta)
+                    citadoRespuesta.appendChild(mensajeRespuesta)
+                    cuadroMensaje.appendChild(citadoRespuesta)
+                    cuadroMensaje.appendChild(mensajePlantilla)
                 }
+
+                cuadroChat.appendChild(cuadroMensaje)
 
                 ultimoId = e.id
 
