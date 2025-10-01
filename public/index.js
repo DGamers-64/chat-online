@@ -4,7 +4,7 @@ let historialChat = [];
 
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
-        document.title = "Chat";
+        document.querySelector("link[rel~='icon']").href = "./img/faviconApagado.ico"
         tieneMensajesNuevos = false;
     }
 });
@@ -170,7 +170,7 @@ async function recibirChat() {
                 ultimoId = e.id
 
                 if (document.visibilityState !== "visible" && !tieneMensajesNuevos) {
-                    document.title = "Chat ●";
+                    document.querySelector("link[rel~='icon']").href = "./img/faviconEncendido.ico"
                     tieneMensajesNuevos = true;
                 }
             })

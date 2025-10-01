@@ -22,7 +22,7 @@ export async function enviarInfoSalas(req, res) {
 
 export async function recibirMensaje(req, res) {
     const chatId = req.params.chatId;
-    const chatActual = Archivos.devolverSalas(chatId)
+    const chatActual = Archivos.devolverChat(chatId)
 
     const ip = Utils.limpiarIP(req.socket.remoteAddress);
     let nombreUsuario;

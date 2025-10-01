@@ -1,3 +1,5 @@
+import fs from "fs";
+
 export default class Mods {
     static buscarMods() {
         return JSON.parse(fs.readFileSync("./listas/mods.json"));
