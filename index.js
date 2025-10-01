@@ -5,6 +5,7 @@ import { banlist } from './middlewares/banlist.js';
 import { nombresRouter } from './routers/nombre.js';
 import { salasRouter } from './routers/salas.js';
 import Mods from './classes/Mods.js';
+import path from 'node:path';
 
 const PORT = process.env.PORT
 const app = express()
@@ -14,7 +15,14 @@ app.use(json())
 
 app.use(banlist)
 app.use(logger)
-app.use(express.static('public'))
+const mods = Mods.buscarMods()
+const modsArray = Object.values(mods)
+if (modsArray.some(e => e.client)) {
+    const mod = modsArray.find(e => e.client)
+    app.use(express.static(path.join(mod.directorio, "public")))
+} else {
+    app.use(express.static('public'))
+}
 
 app.use("/nombre", nombresRouter)
 app.use("/salas", salasRouter)

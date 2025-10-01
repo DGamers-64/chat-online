@@ -2,7 +2,10 @@ import fs from "fs";
 
 export default class Mods {
     static buscarMods() {
-        return JSON.parse(fs.readFileSync("./listas/mods.json"));
+        const mods = JSON.parse(fs.readFileSync("./listas/mods.json"));
+        return Object.fromEntries(
+            Object.entries(mods).filter(([key, value]) => value.enabled)
+        )
     }
     
     static buscarModEspecifico(clave) {
